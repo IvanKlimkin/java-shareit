@@ -28,7 +28,7 @@ public class ItemController {
     }
 
     @GetMapping("/{itemId}")
-    public Item getItemById(@PathVariable Long itemId){
+    public Item getItemById(@PathVariable Long itemId) throws Exception {
         return itemService.getItemById(itemId);
     }
 
