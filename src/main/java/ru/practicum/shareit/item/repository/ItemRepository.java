@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 @Component
 public class ItemRepository {
-    private Map<Long, List<Item>> items = new HashMap<>();
+    private final Map<Long, List<Item>> items = new HashMap<>();
     private Long id = 0L;
 
     public List<Item> getItems(Long ownerId) {
@@ -22,12 +22,10 @@ public class ItemRepository {
 
     public Item getItemById(Long itemId) {
         return items.values().stream()
-                .map(
-                        iList-> iList.stream()
-                                .filter(i->i.getId().equals(itemId))
-                                .findFirst()
-                                .get()
-                )
+                .map(iList -> iList.stream()
+                        .filter(i -> i.getId().equals(itemId))
+                        .findFirst()
+                        .get())
                 .findFirst()
                 .orElseThrow(() -> new ServerException(String.format("Вещь с Id=%d не найден", itemId)));
     }
@@ -49,8 +47,7 @@ public class ItemRepository {
         item.setId(++id);
         if (items.get(ownerId) == null) {
             items.put(ownerId, List.of(item));
-        }
-        else {
+        } else {
             items.get(ownerId).add(item);
         }
         return item;

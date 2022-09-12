@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 @Component
 public class UserRepository {
-    private List<User> users = new ArrayList<>();
+    private final List<User> users = new ArrayList<>();
     private Long id = 0L;
 
     public List<User> getAllUsers() {
