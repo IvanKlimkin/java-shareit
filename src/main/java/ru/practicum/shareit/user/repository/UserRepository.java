@@ -45,7 +45,9 @@ public class UserRepository {
                     if (emails.contains(userDto.getEmail())) {
                         throw new Exception(
                                 String.format("Пользователь с Email=%s уже существует", userDto.getEmail()));
-                    } else user.setEmail(userDto.getEmail());
+                    } else {
+                        user.setEmail(userDto.getEmail());
+                    }
                 }
                 return user;
             }

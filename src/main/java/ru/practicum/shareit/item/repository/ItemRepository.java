@@ -21,16 +21,15 @@ public class ItemRepository {
     }
 
     public Item getItemById(Long itemId) {
-        for (List<Item> userItems : items.values()) {
-            if (userItems != null) {
-                for (Item item : userItems) {
-                    if (item.getId().equals(itemId)) {
-                        return item;
-                    }
-                }
-            }
-        }
-        throw new ServerException(String.format("Вещь с Id=%d не найден", itemId));
+        return items.values().stream()
+                .map(
+                        iList-> iList.stream()
+                                .filter(i->i.getId().equals(itemId))
+                                .findFirst()
+                                .get()
+                )
+                .findFirst()
+                .orElseThrow(() -> new ServerException(String.format("Вещь с Id=%d не найден", itemId)));
     }
 
     public List<Item> searchItems(String text) {
@@ -50,7 +49,10 @@ public class ItemRepository {
         item.setId(++id);
         if (items.get(ownerId) == null) {
             items.put(ownerId, List.of(item));
-        } else items.get(ownerId).add(item);
+        }
+        else {
+            items.get(ownerId).add(item);
+        }
         return item;
     }
 

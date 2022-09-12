@@ -34,7 +34,9 @@ public class UserController {
                 .filter(u -> u.getEmail().equals(user.getEmail()))
                 .findFirst().isEmpty()) {
             return userService.addNewUser(user);
-        } else throw new Exception(String.format("Пользователь с Email=%s уже существует", user.getEmail()));
+        } else {
+            throw new Exception(String.format("Пользователь с Email=%s уже существует", user.getEmail()));
+        }
     }
 
     @PatchMapping("/{userId}")
