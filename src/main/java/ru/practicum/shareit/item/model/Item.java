@@ -1,23 +1,38 @@
 package ru.practicum.shareit.item.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
+import ru.practicum.shareit.user.model.User;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import javax.persistence.*;
 
+
+@NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 @ToString
+@Entity
+@Table(name = "items")
 public class Item {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotBlank(message = "Необходимо задать название вещи")
+
+    @Column(name = "name")
     private String name;
-    @NotBlank(message = "Необходимо задать описание вещи")
+
+    @Column(name = "description")
     private String description;
-    @NotNull(message = "Необходимо задать статус вещи")
+
+    @Column(name = "available")
     private Boolean available;
+
+    @OneToOne
+    @JoinColumn(name = "owner_id")
+    private User owner;
+
+/*    @OneToOne
+    @JoinColumn(name = "request_id")
+    private ItemRequest request;
+*/
 }
