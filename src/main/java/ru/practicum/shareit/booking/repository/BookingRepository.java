@@ -14,18 +14,18 @@ import java.util.List;
 public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     Booking findBookingByBookerAndItemAndStatusAndEndIsBefore(
-            User user, Item item, Status status, LocalDateTime end_time);
+            User user, Item item, Status status, LocalDateTime endTime);
 
     List<Booking> findBookingsByBookerAndStatus(User user, Status status);
 
     List<Booking> findBookingsByBooker(User user, Sort sort);
 
-    List<Booking> findBookingsByBookerAndStartAfter(User user, LocalDateTime start_time, Sort sort);
+    List<Booking> findBookingsByBookerAndStartAfter(User user, LocalDateTime startTime, Sort sort);
 
-    List<Booking> findBookingsByBookerAndEndBefore(User user, LocalDateTime stop_time, Sort sort);
+    List<Booking> findBookingsByBookerAndEndBefore(User user, LocalDateTime stopTime, Sort sort);
 
     List<Booking> findBookingsByBookerAndStartIsBeforeAndEndIsAfter(
-            User user, LocalDateTime cur_time, LocalDateTime cur_time2, Sort sort);
+            User user, LocalDateTime curTime, LocalDateTime curTime2, Sort sort);
 
     List<Booking> findBookingsByItemAndEndIsBeforeAndStartIsAfter(Item item, LocalDateTime start, LocalDateTime end);
 
@@ -33,16 +33,16 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     List<Booking> findBookingsByItemIn(List<Item> items, Sort sort);
 
-    List<Booking> findBookingsByItemInAndStartAfter(List<Item> items, LocalDateTime start_time, Sort sort);
+    List<Booking> findBookingsByItemInAndStartAfter(List<Item> items, LocalDateTime startTime, Sort sort);
 
-    List<Booking> findBookingsByItemInAndEndBefore(List<Item> items, LocalDateTime current_time);
+    List<Booking> findBookingsByItemInAndEndBefore(List<Item> items, LocalDateTime currentTime);
 
 
     @Query("select b from Booking b where b.item in ?1 and b.start<?2 and b.end>?2")
-    List<Booking> checkCurrent(List<Item> items, LocalDateTime current_time);
+    List<Booking> checkCurrent(List<Item> items, LocalDateTime currentTime);
 
-    Booking findBookingByItemAndStartAfter(Item item, LocalDateTime start_time, Sort sort);
+    Booking findBookingByItemAndStartAfter(Item item, LocalDateTime startTime, Sort sort);
 
-    Booking findBookingByItemAndEndBefore(Item item, LocalDateTime end_time, Sort sort);
+    Booking findBookingByItemAndEndBefore(Item item, LocalDateTime endTime, Sort sort);
 
 }
