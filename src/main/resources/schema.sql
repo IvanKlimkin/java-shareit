@@ -43,7 +43,7 @@ CREATE TABLE IF NOT EXISTS requests
     requestor_id BIGINT                                  NOT NULL,
     created      TIMESTAMP WITHOUT TIME ZONE             NOT NULL,
     CONSTRAINT pk_request PRIMARY KEY (id),
-    CONSTRAINT fk_booking_item
+    CONSTRAINT fk_request_user
         FOREIGN KEY (requestor_id) REFERENCES users ON DELETE CASCADE
 );
 
