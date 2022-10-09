@@ -25,7 +25,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
@@ -123,11 +122,10 @@ public class ItemServiceImpl implements ItemService {
             }
             if (itemDto.getAvailable() != null) {
                 item.setAvailable(itemDto.getAvailable());
-                  }
+            }
             itemRepository.save(item);
             return itemMapper.toDto(item);
-        }
-        else {
+        } else {
             throw new ServerException("Сущность с таким ID отсутствуют");
         }
     }

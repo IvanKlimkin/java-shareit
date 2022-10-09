@@ -1,7 +1,5 @@
 package ru.practicum.shareit.booking.dto;
 
-import ru.practicum.shareit.exception.ValidationException;
-
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
@@ -9,12 +7,12 @@ public class StartBeforeEndValidator implements ConstraintValidator<StartBeforeE
 
 
     @Override
-    public void initialize(StartBeforeEnd startBeforeEnd){
+    public void initialize(StartBeforeEnd startBeforeEnd) {
 
     }
+
     @Override
     public boolean isValid(BookingDto bookingDto, ConstraintValidatorContext constraintValidatorContext) {
-
         if (bookingDto.getEnd().isBefore(bookingDto.getStart())) {
             constraintValidatorContext.disableDefaultConstraintViolation();
             constraintValidatorContext.buildConstraintViolationWithTemplate(

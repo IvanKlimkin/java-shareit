@@ -12,6 +12,8 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface StartBeforeEnd {
     String message() default "Start default";
+
     Class<?>[] groups() default {};
+
     Class<? extends Payload>[] payload() default {};
 }
