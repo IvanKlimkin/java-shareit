@@ -17,9 +17,5 @@ public interface BookingService {
     BookingDto getBookingById(Long userId, Long bookingId);
 
     BookingDto setStatusByUser(Long userId, Long bookingId, Boolean bookingApprove);
-/*
-BookingDto add(BookingDto bookingDto);
 
-BookingDto update(BookingDto bookingDto);
-*/
 }

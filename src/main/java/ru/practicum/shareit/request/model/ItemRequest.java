@@ -16,13 +16,14 @@ import java.time.LocalDateTime;
 @Table(name = "requests")
 public class ItemRequest {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "description")
+    @Column(name = "description", nullable = false, length = 255)
     private String description;
 
     @OneToOne
-    @JoinColumn(name = "requestor_id")
+    @JoinColumn(name = "requestor_id", nullable = false)
     private User requestor;
 
     @CreationTimestamp

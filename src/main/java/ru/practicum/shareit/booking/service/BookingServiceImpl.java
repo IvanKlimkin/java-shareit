@@ -35,17 +35,17 @@ public class BookingServiceImpl implements BookingService {
         User user = userRepository
                 .findById(userId).orElseThrow(() -> new ServerException("Такой User отсутствует"));
         List<Booking> bookings = new ArrayList<>();
-        if (status.equals(Status.ALL)) {
+        if (status == Status.ALL) {
             bookings = bookingRepository.findBookingsByBooker(
                     user, Sort.by(Sort.Order.desc("start")));
-        } else if (status.equals(Status.FUTURE)) {
+        } else if (status == Status.FUTURE) {
             bookings = bookingRepository.findBookingsByBookerAndStartAfter(
                     user, NOW_MOMENT, Sort.by(Sort.Order.desc("start")));
-        } else if (status.equals(Status.CURRENT)) {
+        } else if (status == Status.CURRENT) {
             LocalDateTime currentTime = LocalDateTime.now();
             bookings = bookingRepository.findBookingsByBookerAndStartIsBeforeAndEndIsAfter(
                     user, currentTime, currentTime, Sort.by(Sort.Order.desc("start")));
-        } else if (status.equals(Status.PAST)) {
+        } else if (status == Status.PAST) {
             LocalDateTime currentTime = LocalDateTime.now();
             bookings = bookingRepository.findBookingsByBookerAndEndBefore(
                     user, currentTime, Sort.by(Sort.Order.desc("start")));
@@ -61,16 +61,16 @@ public class BookingServiceImpl implements BookingService {
                 .findById(userId).orElseThrow(() -> new ServerException("Такой User отсутствует"));
         List<Item> userItems = itemRepository.findItemsByOwner(user);
         List<Booking> userItemBookings = new ArrayList<>();
-        if (status.equals(Status.ALL)) {
+        if (status == Status.ALL) {
             userItemBookings = bookingRepository.findBookingsByItemIn(
                     userItems, Sort.by(Sort.Order.desc("start")));
-        } else if (status.equals(Status.FUTURE)) {
+        } else if (status == Status.FUTURE) {
             userItemBookings = bookingRepository.findBookingsByItemInAndStartAfter(
                     userItems, NOW_MOMENT, Sort.by(Sort.Order.desc("start")));
         } else if (status.equals(Status.CURRENT)) {
             LocalDateTime currentTime = LocalDateTime.now();
             userItemBookings = bookingRepository.checkCurrent(userItems, currentTime);
-        } else if (status.equals(Status.PAST)) {
+        } else if (status == Status.PAST) {
             LocalDateTime currentTime = LocalDateTime.now();
             userItemBookings = bookingRepository.findBookingsByItemInAndEndBefore(userItems, currentTime);
         } else {
@@ -82,9 +82,6 @@ public class BookingServiceImpl implements BookingService {
     @Transactional
     public BookingDto addBooking(Long userId, BookingDto bookingDto) throws ValidationException {
         Booking booking = bookingMapper.toBooking(userId, bookingDto);
-        if (booking.getStart().isAfter(booking.getEnd())) {
-            throw new ValidationException("Время окончания раньше времени начала аренды.");
-        }
         if (booking.getItem().getOwner().getId().equals(userId)) {
             throw new ServerException("Аренда вещи у самого себя");
         }
@@ -115,7 +112,7 @@ public class BookingServiceImpl implements BookingService {
                 .orElseThrow(() -> new ServerException("Такое бронирование отсутствует."));
         if (booking.getItem().getOwner().getId().equals(userId)) {
             if (bookingApprove) {
-                if (booking.getStatus().equals(Status.APPROVED)) {
+                if (booking.getStatus() == Status.APPROVED) {
                     throw new ValidationException("Аренда уже подтверждена");
                 }
                 booking.setStatus(Status.APPROVED);
