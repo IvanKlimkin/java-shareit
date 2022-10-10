@@ -1,5 +1,6 @@
 package ru.practicum.shareit.booking.model;
 
+import java.util.Objects;
 import java.util.Optional;
 
 public enum Status {
@@ -13,20 +14,11 @@ public enum Status {
 
     public static Optional<Status> from(String status) {
         for (Status value : Status.values()) {
-            if (value.name().equals(status)) {
+            if (Objects.equals(value.name(), status)) {
                 return Optional.of(value);
             }
 
         }
         return Optional.empty();
     }
-
 }
-/*
-ALL,
-CURRENT,
-FUTURE,
-PAST,
-REJECTED,
-WAITING
- */
