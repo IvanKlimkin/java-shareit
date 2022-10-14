@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.shareit.MyPageRequest;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingInfo;
 import ru.practicum.shareit.booking.model.Status;
@@ -18,6 +19,8 @@ import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.CommentRepository;
 import ru.practicum.shareit.item.repository.ItemRepository;
+import ru.practicum.shareit.request.model.ItemRequest;
+import ru.practicum.shareit.request.repository.ItemRequestRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 
@@ -32,6 +35,7 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
+    private final ItemRequestRepository itemRequestRepository;
     private final ItemMapper itemMapper;
     private final UserRepository userRepository;
     private final BookingRepository bookingRepository;
@@ -39,7 +43,7 @@ public class ItemServiceImpl implements ItemService {
     private final CommentMapper commentMapper;
 
     @Override
-    public List<ItemBookingDto> getItems(Long ownerId) {
+    public List<ItemBookingDto> getItems(Long ownerId, MyPageRequest pageRequest) {
         User owner = userRepository.findById(ownerId).orElseThrow(() -> new ServerException("Такой User отсутствует"));
         List<ItemBookingDto> listBookingItems = new ArrayList<>();
         for (Item item : itemRepository.findItemsByOwner(owner)) {
@@ -74,8 +78,8 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemDto> searchItems(String text) {
-        return itemMapper.toDto(itemRepository.search(text));
+    public List<ItemDto> searchItems(String text, MyPageRequest pageRequest) {
+        return itemMapper.toDto(itemRepository.search(text, pageRequest));
     }
 
     @Override
@@ -83,7 +87,9 @@ public class ItemServiceImpl implements ItemService {
     public ItemDto addNewItem(Long ownerId, ItemDto itemDto) {
         User owner = userRepository.findById(ownerId)
                 .orElseThrow(() -> new ServerException("Пользователь с таким ID или сущностью отсутствуют"));
-        Item item = itemMapper.toItem(itemDto, owner);
+        ItemRequest itemRequest = itemDto.getRequestId() == null ? null : itemRequestRepository.findById(itemDto.getRequestId())
+                .orElseThrow(()->new ServerException("No such ItemRequest in Db"));
+        Item item = itemMapper.toItem(itemDto, owner, itemRequest);
         return itemMapper.toDto(itemRepository.save(item));
     }
 

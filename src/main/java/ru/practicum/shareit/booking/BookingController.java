@@ -1,14 +1,18 @@
 package ru.practicum.shareit.booking;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.Create;
+import ru.practicum.shareit.MyPageRequest;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.model.Status;
 import ru.practicum.shareit.booking.service.BookingService;
 import ru.practicum.shareit.exception.BadStatusException;
 
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 @RestController
@@ -23,11 +27,15 @@ public class BookingController {
                                                @RequestParam(
                                                        name = "state",
                                                        required = false,
-                                                       defaultValue = "ALL") String stateParam) {
+                                                       defaultValue = "ALL") String stateParam,
+                                               @PositiveOrZero @RequestParam(
+                                                       name = "from", defaultValue = "0") Integer from,
+                                               @Positive @RequestParam(
+                                                       name = "size", defaultValue = "10") Integer size) {
         Status status = Status.from(stateParam).orElseThrow(
                 () -> new BadStatusException(stateParam));
-
-        return bookingService.getAllUserBookings(userId, status);
+        final MyPageRequest pageRequest = new MyPageRequest(from,size, Sort.by("start").descending());
+        return bookingService.getAllUserBookings(userId, status, pageRequest);
     }
 
     @GetMapping("/owner")
@@ -35,11 +43,15 @@ public class BookingController {
                                                    @RequestParam(
                                                            name = "state",
                                                            required = false,
-                                                           defaultValue = "ALL") String stateParam) {
+                                                           defaultValue = "ALL") String stateParam,
+                                                   @PositiveOrZero @RequestParam(
+                                                           name = "from", defaultValue = "0") Integer from,
+                                                   @Positive @RequestParam(
+                                                           name = "size", defaultValue = "10") Integer size) {
         Status status = Status.from(stateParam).orElseThrow(
                 () -> new BadStatusException(stateParam));
-
-        return bookingService.getAllUserItemBookings(userId, status);
+        final MyPageRequest pageRequest = new MyPageRequest(from,size, Sort.by("start").descending());
+        return bookingService.getAllUserItemBookings(userId, status, pageRequest);
     }
 
     @PostMapping

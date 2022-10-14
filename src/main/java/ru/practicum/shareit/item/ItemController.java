@@ -1,15 +1,19 @@
 package ru.practicum.shareit.item;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.Create;
+import ru.practicum.shareit.MyPageRequest;
 import ru.practicum.shareit.Update;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemBookingDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.service.ItemService;
 
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.Collections;
 import java.util.List;
 
@@ -21,8 +25,13 @@ public class ItemController {
     private final ItemService itemService;
 
     @GetMapping
-    public List<ItemBookingDto> getAll(@RequestHeader("X-Sharer-User-Id") long ownerId) {
-        return itemService.getItems(ownerId);
+    public List<ItemBookingDto> getAll(@RequestHeader("X-Sharer-User-Id") long ownerId,
+                                       @PositiveOrZero @RequestParam(
+                                               name = "from", defaultValue = "0") Integer from,
+                                       @Positive @RequestParam(
+                                               name = "size", defaultValue = "10") Integer size) {
+        final MyPageRequest pageRequest = new MyPageRequest(from,size, Sort.unsorted());
+        return itemService.getItems(ownerId,pageRequest);
     }
 
     @GetMapping("/{itemId}")
@@ -32,8 +41,13 @@ public class ItemController {
     }
 
     @GetMapping("/search")
-    public List<ItemDto> search(@RequestParam String text) {
-        return text.isEmpty() ? Collections.emptyList() : itemService.searchItems(text);
+    public List<ItemDto> search(@RequestParam String text,
+                                @PositiveOrZero @RequestParam(
+                                        name = "from", defaultValue = "0") Integer from,
+                                @Positive @RequestParam(
+                                        name = "size", defaultValue = "10") Integer size) {
+        final MyPageRequest pageRequest = new MyPageRequest(from,size, Sort.unsorted());
+        return text.isEmpty() ? Collections.emptyList() : itemService.searchItems(text,pageRequest);
     }
 
     @PostMapping

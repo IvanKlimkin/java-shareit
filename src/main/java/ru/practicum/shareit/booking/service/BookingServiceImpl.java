@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.shareit.MyPageRequest;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.mapper.BookingMapper;
 import ru.practicum.shareit.booking.model.Booking;
@@ -31,31 +32,31 @@ public class BookingServiceImpl implements BookingService {
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
 
-    public List<BookingDto> getAllUserBookings(Long userId, Status status) {
+    public List<BookingDto> getAllUserBookings(Long userId, Status status, MyPageRequest pageRequest) {
         User user = userRepository
                 .findById(userId).orElseThrow(() -> new ServerException("Такой User отсутствует"));
         List<Booking> bookings = new ArrayList<>();
         if (status == Status.ALL) {
             bookings = bookingRepository.findBookingsByBooker(
-                    user, Sort.by(Sort.Order.desc("start")));
+                    user,pageRequest/* Sort.by(Sort.Order.desc("start"))*/);
         } else if (status == Status.FUTURE) {
             bookings = bookingRepository.findBookingsByBookerAndStartAfter(
-                    user, NOW_MOMENT, Sort.by(Sort.Order.desc("start")));
+                    user, NOW_MOMENT, pageRequest/*, Sort.by(Sort.Order.desc("start"))*/);
         } else if (status == Status.CURRENT) {
             LocalDateTime currentTime = LocalDateTime.now();
             bookings = bookingRepository.findBookingsByBookerAndStartIsBeforeAndEndIsAfter(
-                    user, currentTime, currentTime, Sort.by(Sort.Order.desc("start")));
+                    user, currentTime, currentTime, pageRequest/*Sort.by(Sort.Order.desc("start"))*/);
         } else if (status == Status.PAST) {
             LocalDateTime currentTime = LocalDateTime.now();
             bookings = bookingRepository.findBookingsByBookerAndEndBefore(
-                    user, currentTime, Sort.by(Sort.Order.desc("start")));
+                    user, currentTime, pageRequest/*Sort.by(Sort.Order.desc("start"))*/);
         } else {
-            bookings = bookingRepository.findBookingsByBookerAndStatus(user, status);
+            bookings = bookingRepository.findBookingsByBookerAndStatus(user, status, pageRequest);
         }
         return bookingMapper.toBookingDto(bookings);
     }
 
-    public List<BookingDto> getAllUserItemBookings(Long userId, Status status) {
+    public List<BookingDto> getAllUserItemBookings(Long userId, Status status, MyPageRequest pageRequest) {
 
         User user = userRepository
                 .findById(userId).orElseThrow(() -> new ServerException("Такой User отсутствует"));
@@ -63,18 +64,18 @@ public class BookingServiceImpl implements BookingService {
         List<Booking> userItemBookings = new ArrayList<>();
         if (status == Status.ALL) {
             userItemBookings = bookingRepository.findBookingsByItemIn(
-                    userItems, Sort.by(Sort.Order.desc("start")));
+                    userItems, pageRequest/*Sort.by(Sort.Order.desc("start"))*/);
         } else if (status == Status.FUTURE) {
             userItemBookings = bookingRepository.findBookingsByItemInAndStartAfter(
-                    userItems, NOW_MOMENT, Sort.by(Sort.Order.desc("start")));
+                    userItems, NOW_MOMENT, pageRequest/*Sort.by(Sort.Order.desc("start"))*/);
         } else if (status.equals(Status.CURRENT)) {
             LocalDateTime currentTime = LocalDateTime.now();
-            userItemBookings = bookingRepository.checkCurrent(userItems, currentTime);
+            userItemBookings = bookingRepository.checkCurrent(userItems, currentTime, pageRequest);
         } else if (status == Status.PAST) {
             LocalDateTime currentTime = LocalDateTime.now();
-            userItemBookings = bookingRepository.findBookingsByItemInAndEndBefore(userItems, currentTime);
+            userItemBookings = bookingRepository.findBookingsByItemInAndEndBefore(userItems, currentTime, pageRequest);
         } else {
-            userItemBookings = bookingRepository.findBookingsByItemInAndStatus(userItems, status);
+            userItemBookings = bookingRepository.findBookingsByItemInAndStatus(userItems, status, pageRequest);
         }
         return bookingMapper.toBookingDto(userItemBookings);
     }
