@@ -1,13 +1,11 @@
 package ru.practicum.shareit.request;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.Create;
 import ru.practicum.shareit.MyPageRequest;
-import ru.practicum.shareit.item.dto.ItemBookingDto;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.service.ItemRequestService;
 
@@ -21,9 +19,10 @@ import java.util.List;
 public class ItemRequestController {
 
     private final ItemRequestService itemRequestService;
+
     @PostMapping
     public ItemRequestDto add(@RequestHeader("X-Sharer-User-Id") Long userId,
-                                  @Validated({Create.class}) @RequestBody ItemRequestDto itemRequestDto) throws Exception {
+                              @Validated({Create.class}) @RequestBody ItemRequestDto itemRequestDto) throws Exception {
         return itemRequestService.addNewItemRequest(userId, itemRequestDto);
     }
 
@@ -39,13 +38,13 @@ public class ItemRequestController {
                                                    @Positive @RequestParam(
                                                            name = "size", defaultValue = "10") Integer size) {
 
-        final MyPageRequest pageRequest = new MyPageRequest(from,size, Sort.by("created"));
+        final MyPageRequest pageRequest = new MyPageRequest(from, size, Sort.by("created"));
         return itemRequestService.getAllItemRequests(userId, pageRequest);
     }
 
     @GetMapping("/{itemRequestId}")
     public ItemRequestDto getItemRequestById(@RequestHeader("X-Sharer-User-Id") long userId,
-                                      @PathVariable Long itemRequestId) throws Exception {
+                                             @PathVariable Long itemRequestId) throws Exception {
         return itemRequestService.getItemRequestById(userId, itemRequestId);
     }
 

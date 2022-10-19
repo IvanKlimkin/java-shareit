@@ -88,7 +88,7 @@ public class ItemServiceImpl implements ItemService {
         User owner = userRepository.findById(ownerId)
                 .orElseThrow(() -> new ServerException("Пользователь с таким ID или сущностью отсутствуют"));
         ItemRequest itemRequest = itemDto.getRequestId() == null ? null : itemRequestRepository.findById(itemDto.getRequestId())
-                .orElseThrow(()->new ServerException("No such ItemRequest in Db"));
+                .orElseThrow(() -> new ServerException("No such ItemRequest in Db"));
         Item item = itemMapper.toItem(itemDto, owner, itemRequest);
         return itemMapper.toDto(itemRepository.save(item));
     }

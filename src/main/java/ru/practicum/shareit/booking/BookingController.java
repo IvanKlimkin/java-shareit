@@ -34,7 +34,7 @@ public class BookingController {
                                                        name = "size", defaultValue = "10") Integer size) {
         Status status = Status.from(stateParam).orElseThrow(
                 () -> new BadStatusException(stateParam));
-        final MyPageRequest pageRequest = new MyPageRequest(from,size, Sort.by("start").descending());
+        final MyPageRequest pageRequest = new MyPageRequest(from, size, Sort.by("start").descending());
         return bookingService.getAllUserBookings(userId, status, pageRequest);
     }
 
@@ -50,7 +50,7 @@ public class BookingController {
                                                            name = "size", defaultValue = "10") Integer size) {
         Status status = Status.from(stateParam).orElseThrow(
                 () -> new BadStatusException(stateParam));
-        final MyPageRequest pageRequest = new MyPageRequest(from,size, Sort.by("start").descending());
+        final MyPageRequest pageRequest = new MyPageRequest(from, size, Sort.by("start").descending());
         return bookingService.getAllUserItemBookings(userId, status, pageRequest);
     }
 

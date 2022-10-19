@@ -12,7 +12,7 @@ import java.util.List;
 @Component
 public class ItemMapper {
 
-    public Item toItem(ItemDto itemDto, User owner,ItemRequest request) {
+    public Item toItem(ItemDto itemDto, User owner, ItemRequest request) {
         return new Item(
                 itemDto.getId(),
                 itemDto.getName(),

@@ -30,8 +30,8 @@ public class ItemController {
                                                name = "from", defaultValue = "0") Integer from,
                                        @Positive @RequestParam(
                                                name = "size", defaultValue = "10") Integer size) {
-        final MyPageRequest pageRequest = new MyPageRequest(from,size, Sort.unsorted());
-        return itemService.getItems(ownerId,pageRequest);
+        final MyPageRequest pageRequest = new MyPageRequest(from, size, Sort.unsorted());
+        return itemService.getItems(ownerId, pageRequest);
     }
 
     @GetMapping("/{itemId}")
@@ -46,8 +46,8 @@ public class ItemController {
                                         name = "from", defaultValue = "0") Integer from,
                                 @Positive @RequestParam(
                                         name = "size", defaultValue = "10") Integer size) {
-        final MyPageRequest pageRequest = new MyPageRequest(from,size, Sort.unsorted());
-        return text.isEmpty() ? Collections.emptyList() : itemService.searchItems(text,pageRequest);
+        final MyPageRequest pageRequest = new MyPageRequest(from, size, Sort.unsorted());
+        return text.isEmpty() ? Collections.emptyList() : itemService.searchItems(text, pageRequest);
     }
 
     @PostMapping

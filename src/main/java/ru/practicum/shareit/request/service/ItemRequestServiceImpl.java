@@ -6,8 +6,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.MyPageRequest;
 import ru.practicum.shareit.exception.ServerException;
-import ru.practicum.shareit.item.dto.ItemBookingDto;
-import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.mapper.ItemRequestMapper;
 import ru.practicum.shareit.request.model.ItemRequest;
@@ -31,10 +29,10 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
     @Override
     @Transactional
-    public ItemRequestDto addNewItemRequest(Long userId, ItemRequestDto itemRequestDto){
+    public ItemRequestDto addNewItemRequest(Long userId, ItemRequestDto itemRequestDto) {
         User requestor = userRepository.findById(userId)
                 .orElseThrow(() -> new ServerException("Пользователь с таким ID отсутствует"));
-        ItemRequest itemRequest = itemRequestMapper.toItemRequest(itemRequestDto,requestor);
+        ItemRequest itemRequest = itemRequestMapper.toItemRequest(itemRequestDto, requestor);
         return itemRequestMapper.toDto(itemRequestRepository.save(itemRequest));
     }
 
@@ -54,16 +52,16 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
     @Override
     @Transactional
-    public List<ItemRequestDto> getAllItemRequests(Long userId,MyPageRequest pageRequest) {
+    public List<ItemRequestDto> getAllItemRequests(Long userId, MyPageRequest pageRequest) {
         User requestor = userRepository.findById(userId)
                 .orElseThrow(() -> new ServerException("Такой User отсутствует"));
         List<ItemRequestDto> listItemRequestDto = itemRequestMapper.toDto(
-                itemRequestRepository.findItemRequestsByRequestorNot(requestor,pageRequest));
+                itemRequestRepository.findItemRequestsByRequestorNot(requestor, pageRequest));
         return listItemRequestDto;
     }
 
     @Override
-    public ItemRequestDto getItemRequestById(Long userId, Long itemRequestId){
+    public ItemRequestDto getItemRequestById(Long userId, Long itemRequestId) {
         User requestor = userRepository.findById(userId)
                 .orElseThrow(() -> new ServerException("Такой User отсутствует"));
         return itemRequestMapper.toDto(itemRequestRepository.findById(itemRequestId)

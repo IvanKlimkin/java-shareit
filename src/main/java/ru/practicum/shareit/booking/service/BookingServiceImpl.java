@@ -1,7 +1,6 @@
 package ru.practicum.shareit.booking.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.MyPageRequest;
@@ -38,18 +37,18 @@ public class BookingServiceImpl implements BookingService {
         List<Booking> bookings = new ArrayList<>();
         if (status == Status.ALL) {
             bookings = bookingRepository.findBookingsByBooker(
-                    user,pageRequest/* Sort.by(Sort.Order.desc("start"))*/);
+                    user, pageRequest);
         } else if (status == Status.FUTURE) {
             bookings = bookingRepository.findBookingsByBookerAndStartAfter(
-                    user, NOW_MOMENT, pageRequest/*, Sort.by(Sort.Order.desc("start"))*/);
+                    user, NOW_MOMENT, pageRequest);
         } else if (status == Status.CURRENT) {
             LocalDateTime currentTime = LocalDateTime.now();
             bookings = bookingRepository.findBookingsByBookerAndStartIsBeforeAndEndIsAfter(
-                    user, currentTime, currentTime, pageRequest/*Sort.by(Sort.Order.desc("start"))*/);
+                    user, currentTime, currentTime, pageRequest);
         } else if (status == Status.PAST) {
             LocalDateTime currentTime = LocalDateTime.now();
             bookings = bookingRepository.findBookingsByBookerAndEndBefore(
-                    user, currentTime, pageRequest/*Sort.by(Sort.Order.desc("start"))*/);
+                    user, currentTime, pageRequest);
         } else {
             bookings = bookingRepository.findBookingsByBookerAndStatus(user, status, pageRequest);
         }
@@ -64,10 +63,10 @@ public class BookingServiceImpl implements BookingService {
         List<Booking> userItemBookings = new ArrayList<>();
         if (status == Status.ALL) {
             userItemBookings = bookingRepository.findBookingsByItemIn(
-                    userItems, pageRequest/*Sort.by(Sort.Order.desc("start"))*/);
+                    userItems, pageRequest);
         } else if (status == Status.FUTURE) {
             userItemBookings = bookingRepository.findBookingsByItemInAndStartAfter(
-                    userItems, NOW_MOMENT, pageRequest/*Sort.by(Sort.Order.desc("start"))*/);
+                    userItems, NOW_MOMENT, pageRequest);
         } else if (status.equals(Status.CURRENT)) {
             LocalDateTime currentTime = LocalDateTime.now();
             userItemBookings = bookingRepository.checkCurrent(userItems, currentTime, pageRequest);
