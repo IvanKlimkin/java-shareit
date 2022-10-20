@@ -31,12 +31,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public UserDto addNewUser(UserDto userDto) {
         User user = userMapper.toUser(userDto);
         return userMapper.toDto(userRepository.save(user));
     }
 
     @Override
+    @Transactional
     public UserDto updateUser(Long userId, UserDto userDto) throws Exception {
         User user = userRepository.getReferenceById(userId);
         if (userDto.getEmail() != null) {
@@ -51,6 +53,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void deleteUser(Long userId) {
         userRepository.deleteById(userId);
     }
