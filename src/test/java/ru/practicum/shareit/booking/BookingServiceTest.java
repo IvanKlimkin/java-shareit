@@ -56,7 +56,7 @@ class BookingServiceTest {
     private MyPageRequest pageRequest;
 
     private User user;
-
+    private User user2;
     private Item item;
 
     private Item item2;
