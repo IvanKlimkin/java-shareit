@@ -16,24 +16,21 @@ import ru.practicum.shareit.user.service.UserServiceImpl;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
-//@WebMvcTest(UserService.class)
-//@AutoConfigureMockMvc
 @ExtendWith(MockitoExtension.class)
 
 public class UserServiceTest {
 
     @Mock
-    UserService userService;
+    private UserService userService;
     @Mock
-    UserRepository userRepository;
+    private UserRepository userRepository;
     @Mock
-    UserMapper userMapper;
+    private UserMapper userMapper;
 
     private UserDto userDto;
     private UserDto userDtoNoId;
@@ -85,15 +82,11 @@ public class UserServiceTest {
 
     @Test
     void getUserByIdFailUserTest() throws Exception {
-        Exception exp = new ServerException("");
         when(userRepository.findById(anyLong()))
                 .thenReturn(Optional.empty());
-
-        try {
-            UserDto userFromService = userService.getUserById(1L);
-        } catch (ServerException e) {
-            exp = e;
-        }
+        ServerException exp = assertThrows(ServerException.class, () -> {
+            userService.getUserById(1L);
+        });
         assertNotNull(exp);
         assertEquals("Пользователь с таким ID отсутствует.", exp.getMessage());
         verify(userRepository, times(1)).findById(anyLong());

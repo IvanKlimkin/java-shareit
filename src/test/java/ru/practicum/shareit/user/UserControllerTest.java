@@ -24,10 +24,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class UserControllerTest {
 
     @MockBean
-    UserService userService;
+    private UserService userService;
 
     @Autowired
-    MockMvc mockMvc;
+    private MockMvc mockMvc;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -44,7 +44,7 @@ public class UserControllerTest {
     }
 
     @Test
-    void getAllUsers() throws Exception {
+    void getAllUsersTest() throws Exception {
         when(userService.getAllUsers())
                 .thenReturn(Collections.emptyList());
 
@@ -57,7 +57,7 @@ public class UserControllerTest {
     }
 
     @Test
-    void getUserById() throws Exception {
+    void getUserByIdTest() throws Exception {
         Long id = 1L;
         when(userService.getUserById(id))
                 .thenReturn(userDto);
@@ -74,7 +74,7 @@ public class UserControllerTest {
     }
 
     @Test
-    void addUser() throws Exception {
+    void addUserTest() throws Exception {
         when(userService.addNewUser(any()))
                 .thenReturn(userDto);
 
@@ -92,7 +92,7 @@ public class UserControllerTest {
     }
 
     @Test
-    void updateUser() throws Exception {
+    void updateUserTest() throws Exception {
         Long id = 1L;
         UserDto userUpdatedDto = new UserDto(1L, "user1_updated@email", "user 1");
 
@@ -112,7 +112,7 @@ public class UserControllerTest {
     }
 
     @Test
-    void deleteUser() throws Exception {
+    void deleteUserTest() throws Exception {
         Long id = 1L;
 
         mockMvc.perform(delete("/users/{userId}", id))

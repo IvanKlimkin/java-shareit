@@ -5,7 +5,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.Create;
-import ru.practicum.shareit.MyPageRequest;
+import ru.practicum.shareit.ShareitPageRequest;
 import ru.practicum.shareit.Update;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemBookingDto;
@@ -30,7 +30,7 @@ public class ItemController {
                                                name = "from", defaultValue = "0") Integer from,
                                        @Positive @RequestParam(
                                                name = "size", defaultValue = "10") Integer size) {
-        final MyPageRequest pageRequest = new MyPageRequest(from, size, Sort.unsorted());
+        final ShareitPageRequest pageRequest = new ShareitPageRequest(from, size, Sort.unsorted());
         return itemService.getItems(ownerId, pageRequest);
     }
 
@@ -46,7 +46,7 @@ public class ItemController {
                                         name = "from", defaultValue = "0") Integer from,
                                 @Positive @RequestParam(
                                         name = "size", defaultValue = "10") Integer size) {
-        final MyPageRequest pageRequest = new MyPageRequest(from, size, Sort.unsorted());
+        final ShareitPageRequest pageRequest = new ShareitPageRequest(from, size, Sort.unsorted());
         return text.isEmpty() ? Collections.emptyList() : itemService.searchItems(text, pageRequest);
     }
 

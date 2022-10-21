@@ -10,7 +10,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import ru.practicum.shareit.MyPageRequest;
+import ru.practicum.shareit.ShareitPageRequest;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemBookingDto;
 import ru.practicum.shareit.item.dto.ItemDto;
@@ -28,17 +28,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class ItemControllerTest {
 
     @MockBean
-    ItemService itemService;
+    private ItemService itemService;
 
     @Autowired
-    MockMvc mockMvc;
+    private MockMvc mockMvc;
 
     @Autowired
     private ObjectMapper objectMapper;
 
     private ItemDto itemDto;
     private ItemBookingDto itemBookingDto;
-    private MyPageRequest pageRequest;
+    private ShareitPageRequest pageRequest;
     private CommentDto commentDto;
 
     @BeforeEach
@@ -47,12 +47,12 @@ public class ItemControllerTest {
         itemBookingDto = new ItemBookingDto(
                 1L, "ItemBookingDto 1", "ItemBookingDto description", true, null, null,
                 Collections.emptyList());
-        pageRequest = new MyPageRequest(0, 10, Sort.unsorted());
+        pageRequest = new ShareitPageRequest(0, 10, Sort.unsorted());
         commentDto = new CommentDto(1L, "text", "author", LocalDateTime.now());
     }
 
     @Test
-    void getAllItems() throws Exception {
+    void getAllItemsTest() throws Exception {
         when(itemService.getItems(1L, pageRequest))
                 .thenReturn(Collections.emptyList());
 
@@ -66,7 +66,7 @@ public class ItemControllerTest {
     }
 
     @Test
-    void getItemById() throws Exception {
+    void getItemByIdTest() throws Exception {
         Long userId = 1L;
         Long itemId = 1L;
         when(itemService.getItemById(itemId, userId))
@@ -86,7 +86,7 @@ public class ItemControllerTest {
     }
 
     @Test
-    void searchItem() throws Exception {
+    void searchItemTest() throws Exception {
         when(itemService.searchItems("text", pageRequest))
                 .thenReturn(Collections.singletonList(itemDto));
 
@@ -103,7 +103,7 @@ public class ItemControllerTest {
     }
 
     @Test
-    void searchItemEmpty() throws Exception {
+    void searchItemEmptyTest() throws Exception {
 
         mockMvc.perform(get("/items/search?text="))
                 .andExpect(status().isOk())
@@ -116,7 +116,7 @@ public class ItemControllerTest {
     }
 
     @Test
-    void addItem() throws Exception {
+    void addItemTest() throws Exception {
         when(itemService.addNewItem(anyLong(), any()))
                 .thenReturn(itemDto);
 
@@ -136,7 +136,7 @@ public class ItemControllerTest {
     }
 
     @Test
-    void addComment() throws Exception {
+    void addCommentTest() throws Exception {
         when(itemService.addNewComment(anyLong(), anyLong(), any()))
                 .thenReturn(commentDto);
 
@@ -154,7 +154,7 @@ public class ItemControllerTest {
     }
 
     @Test
-    void updateItem() throws Exception {
+    void updateItemTest() throws Exception {
         when(itemService.updateItem(anyLong(), anyLong(), any()))
                 .thenReturn(itemDto);
 
@@ -174,7 +174,7 @@ public class ItemControllerTest {
     }
 
     @Test
-    void deleteItem() throws Exception {
+    void deleteItemTest() throws Exception {
         Long id = 1L;
         mockMvc.perform(delete("/items/{itemId}", id)
                         .header("X-Sharer-User-Id", 1L))

@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.Sort;
-import ru.practicum.shareit.MyPageRequest;
+import ru.practicum.shareit.ShareitPageRequest;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.user.model.User;
@@ -20,12 +20,12 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 public class ItemRepositoryTest {
 
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
 
     @Autowired
-    ItemRepository itemRepository;
+    private ItemRepository itemRepository;
 
-    private MyPageRequest pageRequest;
+    private ShareitPageRequest pageRequest;
 
     private User user1;
     private User user2;
@@ -41,11 +41,11 @@ public class ItemRepositoryTest {
         user2 = userRepository.save(new User(2L, "user2@email", "user 2"));
         item2 = itemRepository.save(
                 new Item(2L, "Item 2", "Item 2 description", true, user2, null));
-        pageRequest = new MyPageRequest(0, 10, Sort.unsorted());
+        pageRequest = new ShareitPageRequest(0, 10, Sort.unsorted());
     }
 
     @Test
-    void findByOwner() {
+    void findByOwnerTest() {
         final List<Item> byOwner = itemRepository.findItemsByOwner(user1);
         assertNotNull(byOwner);
         assertEquals(item1.getId(), byOwner.get(0).getId());
@@ -54,7 +54,7 @@ public class ItemRepositoryTest {
     }
 
     @Test
-    void findByIdAndOwner() {
+    void findByIdAndOwnerTest() {
         final Item byIdAndOwner = itemRepository.findItemByIdAndOwner(item2.getId(), user2);
         assertNotNull(byIdAndOwner);
         assertEquals(item2.getId(), byIdAndOwner.getId());
@@ -63,7 +63,7 @@ public class ItemRepositoryTest {
     }
 
     @Test
-    void search() {
+    void searchTest() {
         final List<Item> searched = itemRepository.search("descrip", pageRequest);
         assertNotNull(searched);
         assertEquals(item1.getId(), searched.get(0).getId());

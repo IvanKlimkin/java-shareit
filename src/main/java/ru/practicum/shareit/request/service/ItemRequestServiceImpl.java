@@ -4,7 +4,7 @@ package ru.practicum.shareit.request.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.shareit.MyPageRequest;
+import ru.practicum.shareit.ShareitPageRequest;
 import ru.practicum.shareit.exception.ServerException;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.mapper.ItemRequestMapper;
@@ -52,7 +52,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
     @Override
     @Transactional
-    public List<ItemRequestDto> getAllItemRequests(Long userId, MyPageRequest pageRequest) {
+    public List<ItemRequestDto> getAllItemRequests(Long userId, ShareitPageRequest pageRequest) {
         User requestor = userRepository.findById(userId)
                 .orElseThrow(() -> new ServerException("Такой User отсутствует"));
         List<ItemRequestDto> listItemRequestDto = itemRequestMapper.toDto(

@@ -7,7 +7,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
-import ru.practicum.shareit.MyPageRequest;
+import ru.practicum.shareit.ShareitPageRequest;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.mapper.BookingMapper;
 import ru.practicum.shareit.booking.model.Booking;
@@ -30,8 +30,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -53,7 +52,7 @@ class BookingServiceTest {
     @Autowired
     private BookingMapper bookingMapper;
 
-    private MyPageRequest pageRequest;
+    private ShareitPageRequest pageRequest;
 
     private User user;
     private User user2;
@@ -85,7 +84,7 @@ class BookingServiceTest {
         bookingRepository = mock(BookingRepository.class);
         bookingMapper = new BookingMapper(itemRepository, userRepository);
         bookingService = new BookingServiceImpl(bookingRepository, bookingMapper, itemRepository, userRepository);
-        pageRequest = new MyPageRequest(0, 10, Sort.by("start").descending());
+        pageRequest = new ShareitPageRequest(0, 10, Sort.by("start").descending());
         userIdDto = new UserIdDto(1L);
         user = new User(1L, "user1@email", "user 1");
         user2 = new User(2L, "user2@email", "user 2");
@@ -102,7 +101,7 @@ class BookingServiceTest {
     }
 
     @Test
-    void getAllUserBookingsALL() {
+    void getAllUserBookingsALLTest() {
         when(userRepository.findById(1L))
                 .thenReturn(Optional.of(user));
         when(bookingRepository.findBookingsByBooker(
@@ -122,7 +121,7 @@ class BookingServiceTest {
     }
 
     @Test
-    void getAllUserBookingsFuture() {
+    void getAllUserBookingsFutureTest() {
         when(userRepository.findById(1L))
                 .thenReturn(Optional.of(user));
         when(bookingRepository.findBookingsByBookerAndStartAfter(
@@ -142,7 +141,7 @@ class BookingServiceTest {
     }
 
     @Test
-    void getAllUserBookingsCurrent() {
+    void getAllUserBookingsCurrentTest() {
         when(userRepository.findById(1L))
                 .thenReturn(Optional.of(user));
         when(bookingRepository.findBookingsByBookerAndStartIsBeforeAndEndIsAfter(any(), any(), any(), any()))
@@ -161,7 +160,7 @@ class BookingServiceTest {
     }
 
     @Test
-    void getAllUserBookingsPast() {
+    void getAllUserBookingsPastTest() {
         when(userRepository.findById(1L))
                 .thenReturn(Optional.of(user));
         when(bookingRepository.findBookingsByBookerAndEndBefore(any(), any(), any()))
@@ -180,7 +179,7 @@ class BookingServiceTest {
     }
 
     @Test
-    void getAllUserBookingsOther() {
+    void getAllUserBookingsOtherTest() {
         when(userRepository.findById(1L))
                 .thenReturn(Optional.of(user));
         when(bookingRepository.findBookingsByBookerAndStatus(any(), any(), any()))
@@ -199,24 +198,22 @@ class BookingServiceTest {
     }
 
     @Test
-    void getAllUserBookingsWrongUser() {
-        Exception exp = new ServerException("");
-
+    void getAllUserBookingsWrongUserTest() {
         when(userRepository.findById(1L))
                 .thenReturn(Optional.empty());
-        try {
-            final List<BookingDto> BookingsDto = bookingService.getAllUserBookings(1L, Status.WAITING, pageRequest);
-        } catch (ServerException e) {
-            exp = e;
 
-            assertNotNull(exp);
-            assertEquals("Такой User отсутствует", exp.getMessage());
-            verify(userRepository, times(1)).findById(any());
-        }
+        ServerException exp = assertThrows(ServerException.class, () -> {
+            bookingService.getAllUserBookings(1L, Status.WAITING, pageRequest);
+        });
+
+        assertNotNull(exp);
+        assertEquals("Такой User отсутствует", exp.getMessage());
+        verify(userRepository, times(1)).findById(any());
+
     }
 
     @Test
-    void getAllUserItemBookingsALL() {
+    void getAllUserItemBookingsALLTest() {
         when(userRepository.findById(1L))
                 .thenReturn(Optional.of(user));
         when(itemRepository.findItemsByOwner(user))
@@ -237,7 +234,7 @@ class BookingServiceTest {
     }
 
     @Test
-    void getAllUserItemBookingsFuture() {
+    void getAllUserItemBookingsFutureTest() {
         when(userRepository.findById(1L))
                 .thenReturn(Optional.of(user));
         when(itemRepository.findItemsByOwner(user))
@@ -258,7 +255,7 @@ class BookingServiceTest {
     }
 
     @Test
-    void getAllUserItemBookingsCurrent() {
+    void getAllUserItemBookingsCurrentTest() {
         when(userRepository.findById(1L))
                 .thenReturn(Optional.of(user));
         when(itemRepository.findItemsByOwner(user))
@@ -279,7 +276,7 @@ class BookingServiceTest {
     }
 
     @Test
-    void getAllUserItemBookingsPast() {
+    void getAllUserItemBookingsPastTest() {
         when(userRepository.findById(1L))
                 .thenReturn(Optional.of(user));
         when(itemRepository.findItemsByOwner(user))
@@ -300,7 +297,7 @@ class BookingServiceTest {
     }
 
     @Test
-    void getAllUserItemBookingsOther() {
+    void getAllUserItemBookingsOtherTest() {
         when(userRepository.findById(1L))
                 .thenReturn(Optional.of(user));
         when(itemRepository.findItemsByOwner(user))
@@ -321,25 +318,21 @@ class BookingServiceTest {
     }
 
     @Test
-    void getAllUserItemBookingsWrongUser() {
-        Exception exp = new ServerException("");
-
+    void getAllUserItemBookingsWrongUserTest() {
         when(userRepository.findById(1L))
                 .thenReturn(Optional.empty());
-        try {
-            final List<BookingDto> BookingsDto =
-                    bookingService.getAllUserItemBookings(1L, Status.WAITING, pageRequest);
-        } catch (ServerException e) {
-            exp = e;
 
-            assertNotNull(exp);
-            assertEquals("Такой User отсутствует", exp.getMessage());
-            verify(userRepository, times(1)).findById(any());
-        }
+        ServerException exp = assertThrows(ServerException.class, () -> {
+            bookingService.getAllUserItemBookings(1L, Status.WAITING, pageRequest);
+        });
+
+        assertNotNull(exp);
+        assertEquals("Такой User отсутствует", exp.getMessage());
+        verify(userRepository, times(1)).findById(any());
     }
 
     @Test
-    void addBooking() throws ValidationException {
+    void addBookingTest() throws ValidationException {
         when(userRepository.findById(anyLong()))
                 .thenReturn(Optional.of(user));
         when(itemRepository.findById(anyLong()))
@@ -367,26 +360,24 @@ class BookingServiceTest {
     }
 
     @Test
-    void addBookingByOUserOwner() throws ValidationException {
-        Exception exp = new ServerException("");
+    void addBookingByOUserOwnerTest() throws ValidationException {
         when(userRepository.findById(anyLong()))
                 .thenReturn(Optional.of(user));
         when(itemRepository.findById(anyLong()))
                 .thenReturn(Optional.of(item));
-        try {
-            final BookingDto bookingDto = bookingService.addBooking(1L, bookingDto1);
-        } catch (ServerException e) {
-            exp = e;
 
-            assertNotNull(exp);
-            assertEquals("Аренда вещи у самого себя", exp.getMessage());
-            verify(userRepository, times(1)).findById(anyLong());
-            verify(itemRepository, times(1)).findById(anyLong());
-        }
+        ServerException exp = assertThrows(ServerException.class, () -> {
+            bookingService.addBooking(1L, bookingDto1);
+        });
+
+        assertNotNull(exp);
+        assertEquals("Аренда вещи у самого себя", exp.getMessage());
+        verify(userRepository, times(1)).findById(anyLong());
+        verify(itemRepository, times(1)).findById(anyLong());
     }
 
     @Test
-    void addBookingNotAllowed() throws ValidationException {
+    void addBookingNotAllowedTest() {
         Exception exp = new ValidationException("");
         when(userRepository.findById(anyLong()))
                 .thenReturn(Optional.of(user));
@@ -394,6 +385,7 @@ class BookingServiceTest {
                 .thenReturn(Optional.of(item));
         when(bookingRepository.save(any()))
                 .thenReturn(booking);
+
 
         try {
             final BookingDto bookingDto = bookingService.addBooking(2L, bookingDto1);
@@ -409,7 +401,7 @@ class BookingServiceTest {
     }
 
     @Test
-    void getBooking() throws ValidationException {
+    void getBookingTest() throws ValidationException {
         when(bookingRepository
                 .findById(1L))
                 .thenReturn(Optional.of(booking));
@@ -424,44 +416,36 @@ class BookingServiceTest {
     }
 
     @Test
-    void getBookingEmpty() throws ValidationException {
-        Exception exp = new ServerException("");
+    void getBookingEmptyTest() {
         when(bookingRepository
                 .findById(1L))
                 .thenReturn(Optional.empty());
-        try {
-            final BookingDto bookingDto = bookingService.getBookingById(1L, 1L);
-        } catch (ServerException e) {
-            exp = e;
+        ServerException exp = assertThrows(ServerException.class, () -> {
+            bookingService.getBookingById(1L, 1L);
+        });
 
-            assertNotNull(exp);
-            assertEquals("Такое бронирование отсутствует.", exp.getMessage());
-            verify(bookingRepository, times(1)).findById(1L);
-        }
-
+        assertNotNull(exp);
+        assertEquals("Такое бронирование отсутствует.", exp.getMessage());
+        verify(bookingRepository, times(1)).findById(1L);
     }
 
     @Test
-    void getBookingByItemOwner() throws ValidationException {
-        Exception exp = new ServerException("");
-
+    void getBookingByItemOwnerTest() {
         when(bookingRepository
                 .findById(1L))
                 .thenReturn(Optional.of(booking));
 
-        try {
-            final BookingDto bookingDto = bookingService.getBookingById(2L, 1L);
-        } catch (ServerException e) {
-            exp = e;
+        ServerException exp = assertThrows(ServerException.class, () -> {
+            bookingService.getBookingById(2L, 1L);
+        });
 
-            assertNotNull(exp);
-            assertEquals("Только хозяин вещи или арендатор вещи могут получать данные", exp.getMessage());
-            verify(bookingRepository, times(1)).findById(1L);
-        }
+        assertNotNull(exp);
+        assertEquals("Только хозяин вещи или арендатор вещи могут получать данные", exp.getMessage());
+        verify(bookingRepository, times(1)).findById(1L);
     }
 
     @Test
-    void setStatus() {
+    void setStatusTest() {
         when(bookingRepository
                 .findById(1L))
                 .thenReturn(Optional.of(booking));
@@ -475,47 +459,42 @@ class BookingServiceTest {
     }
 
     @Test
-    void setStatusNoBookingExist() {
-        Exception exp = new ServerException("");
+    void setStatusNoBookingExistTest() {
         when(bookingRepository
                 .findById(1L))
                 .thenReturn(Optional.empty());
 
-        try {
-            final BookingDto bookingDto = bookingService.setStatusByUser(1L, 1L, true);
-        } catch (ServerException e) {
-            exp = e;
+        ServerException exp = assertThrows(ServerException.class, () -> {
+            bookingService.setStatusByUser(1L, 1L, true);
+        });
 
-            assertNotNull(exp);
-            assertEquals("Такое бронирование отсутствует.", exp.getMessage());
-            verify(bookingRepository, times(1)).findById(1L);
-        }
+        assertNotNull(exp);
+        assertEquals("Такое бронирование отсутствует.", exp.getMessage());
+        verify(bookingRepository, times(1)).findById(1L);
     }
 
     @Test
-    void setStatusWrongOwner() {
-        Exception exp = new ServerException("");
+    void setStatusWrongOwnerTest() {
         when(bookingRepository
                 .findById(1L))
                 .thenReturn(Optional.of(booking));
 
-        try {
-            final BookingDto bookingDto = bookingService.setStatusByUser(2L, 1L, true);
-        } catch (ServerException e) {
-            exp = e;
+        ServerException exp = assertThrows(ServerException.class, () -> {
+            bookingService.setStatusByUser(2L, 1L, true);
+        });
 
-            assertNotNull(exp);
-            assertEquals("Только хозяин вещи может изменять статус", exp.getMessage());
-            verify(bookingRepository, times(1)).findById(1L);
-        }
+        assertNotNull(exp);
+        assertEquals("Только хозяин вещи может изменять статус", exp.getMessage());
+        verify(bookingRepository, times(1)).findById(1L);
     }
 
     @Test
-    void setStatusAlreadyApproved() {
+    void setStatusAlreadyApprovedTest() {
         Exception exp = new ValidationException("");
         when(bookingRepository
                 .findById(1L))
                 .thenReturn(Optional.of(booking));
+
 
         try {
             final BookingDto bookingDto = bookingService.setStatusByUser(1L, 1L, true);

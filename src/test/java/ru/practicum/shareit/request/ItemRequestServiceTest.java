@@ -7,7 +7,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
-import ru.practicum.shareit.MyPageRequest;
+import ru.practicum.shareit.ShareitPageRequest;
 import ru.practicum.shareit.exception.ServerException;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
@@ -23,8 +23,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -54,7 +53,7 @@ class ItemRequestServiceTest {
 
     private ItemRequest itemRequest;
 
-    private MyPageRequest pageRequest;
+    private ShareitPageRequest pageRequest;
 
     @BeforeEach
     void beforeEach() {
@@ -65,11 +64,11 @@ class ItemRequestServiceTest {
         itemRequestRepository = mock(ItemRequestRepository.class);
         itemRequestMapper = new ItemRequestMapper();
         itemRequestService = new ItemRequestServiceImpl(itemRequestRepository, userRepository, itemRequestMapper);
-        pageRequest = new MyPageRequest(0, 10, Sort.unsorted());
+        pageRequest = new ShareitPageRequest(0, 10, Sort.unsorted());
     }
 
     @Test
-    void addItemRequest() {
+    void addItemRequestTest() {
         when(userRepository.findById(1L))
                 .thenReturn(Optional.of(user));
         when(itemRequestRepository.save(any()))
@@ -86,25 +85,19 @@ class ItemRequestServiceTest {
     }
 
     @Test
-    void addItemRequestWrongUser() {
-        Exception exp = new ServerException("");
+    void addItemRequestWrongUserTest() {
         when(userRepository.findById(1L))
                 .thenReturn(Optional.empty());
-
-        try {
-            final ItemRequestDto dto = itemRequestService.addNewItemRequest(1L, itemRequestDto);
-        } catch (
-                ServerException e) {
-            exp = e;
-            assertNotNull(exp);
-            assertEquals("Пользователь с таким ID отсутствует", exp.getMessage());
-            verify(userRepository, times(1)).findById(1L);
-
-        }
+        ServerException exp = assertThrows(ServerException.class, () -> {
+            itemRequestService.addNewItemRequest(1L, itemRequestDto);
+        });
+        assertNotNull(exp);
+        assertEquals("Пользователь с таким ID отсутствует", exp.getMessage());
+        verify(userRepository, times(1)).findById(1L);
     }
 
     @Test
-    void getItemRequestByUserId() {
+    void getItemRequestByUserIdTest() {
         when(userRepository.findById(1L))
                 .thenReturn(Optional.of(user));
         when(itemRequestRepository.findItemRequestsByRequestor(user))
@@ -122,25 +115,19 @@ class ItemRequestServiceTest {
     }
 
     @Test
-    void getItemRequestByUserIdWrongUser() {
-        Exception exp = new ServerException("");
+    void getItemRequestByUserIdWrongUserTest() {
         when(userRepository.findById(1L))
                 .thenReturn(Optional.empty());
-
-        try {
-            final List<ItemRequestDto> dtos = itemRequestService.getAllItemRequestsByUserId(1L);
-        } catch (
-                ServerException e) {
-            exp = e;
-            assertNotNull(exp);
-            assertEquals("Такой User отсутствует", exp.getMessage());
-            verify(userRepository, times(1)).findById(1L);
-
-        }
+        ServerException exp = assertThrows(ServerException.class, () -> {
+            itemRequestService.getAllItemRequestsByUserId(1L);
+        });
+        assertNotNull(exp);
+        assertEquals("Такой User отсутствует", exp.getMessage());
+        verify(userRepository, times(1)).findById(1L);
     }
 
     @Test
-    void getAllItemRequests() {
+    void getAllItemRequestsTest() {
         when(userRepository.findById(1L))
                 .thenReturn(Optional.of(user));
         when(itemRequestRepository.findItemRequestsByRequestorNot(user, pageRequest))
@@ -158,25 +145,19 @@ class ItemRequestServiceTest {
     }
 
     @Test
-    void getAllItemRequestsWrongUser() {
-        Exception exp = new ServerException("");
+    void getAllItemRequestsWrongUserTest() {
         when(userRepository.findById(1L))
                 .thenReturn(Optional.empty());
-
-        try {
-            final List<ItemRequestDto> dtos = itemRequestService.getAllItemRequests(1L, pageRequest);
-        } catch (
-                ServerException e) {
-            exp = e;
-            assertNotNull(exp);
-            assertEquals("Такой User отсутствует", exp.getMessage());
-            verify(userRepository, times(1)).findById(1L);
-
-        }
+        ServerException exp = assertThrows(ServerException.class, () -> {
+            itemRequestService.getAllItemRequests(1L, pageRequest);
+        });
+        assertNotNull(exp);
+        assertEquals("Такой User отсутствует", exp.getMessage());
+        verify(userRepository, times(1)).findById(1L);
     }
 
     @Test
-    void getItemRequestById() {
+    void getItemRequestByIdTest() {
         when(userRepository.findById(1L))
                 .thenReturn(Optional.of(user));
         when(itemRequestRepository.findById(2L))
@@ -193,41 +174,29 @@ class ItemRequestServiceTest {
     }
 
     @Test
-    void getItemRequestByIdWrongUser() {
-        Exception exp = new ServerException("");
+    void getItemRequestByIdWrongUserTest() {
         when(userRepository.findById(1L))
                 .thenReturn(Optional.empty());
-
-        try {
-            final ItemRequestDto dto = itemRequestService.getItemRequestById(1L, 2L);
-        } catch (
-                ServerException e) {
-            exp = e;
-            assertNotNull(exp);
-            assertEquals("Такой User отсутствует", exp.getMessage());
-            verify(userRepository, times(1)).findById(1L);
-
-        }
+        ServerException exp = assertThrows(ServerException.class, () -> {
+            itemRequestService.getItemRequestById(1L, 2L);
+        });
+        assertNotNull(exp);
+        assertEquals("Такой User отсутствует", exp.getMessage());
+        verify(userRepository, times(1)).findById(1L);
     }
 
     @Test
-    void getItemRequestByIdWrongItem() {
-        Exception exp = new ServerException("");
+    void getItemRequestByIdWrongItemTest() {
         when(userRepository.findById(1L))
                 .thenReturn(Optional.of(user));
         when(itemRequestRepository.findById(2L))
                 .thenReturn(Optional.empty());
-
-        try {
-            final ItemRequestDto dto = itemRequestService.getItemRequestById(1L, 2L);
-        } catch (
-                ServerException e) {
-            exp = e;
-            assertNotNull(exp);
-            assertEquals("Такой Item Request отсутствует", exp.getMessage());
-            verify(userRepository, times(1)).findById(1L);
-            verify(itemRequestRepository, times(1)).findById(2L);
-        }
+        ServerException exp = assertThrows(ServerException.class, () -> {
+            itemRequestService.getItemRequestById(1L, 2L);
+        });
+        assertNotNull(exp);
+        assertEquals("Такой Item Request отсутствует", exp.getMessage());
+        verify(userRepository, times(1)).findById(1L);
+        verify(itemRequestRepository, times(1)).findById(2L);
     }
-
 }

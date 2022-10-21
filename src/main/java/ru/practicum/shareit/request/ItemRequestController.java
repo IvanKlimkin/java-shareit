@@ -5,7 +5,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.Create;
-import ru.practicum.shareit.MyPageRequest;
+import ru.practicum.shareit.ShareitPageRequest;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.service.ItemRequestService;
 
@@ -38,7 +38,7 @@ public class ItemRequestController {
                                                    @Positive @RequestParam(
                                                            name = "size", defaultValue = "10") Integer size) {
 
-        final MyPageRequest pageRequest = new MyPageRequest(from, size, Sort.by("created"));
+        final ShareitPageRequest pageRequest = new ShareitPageRequest(from, size, Sort.by("created"));
         return itemRequestService.getAllItemRequests(userId, pageRequest);
     }
 

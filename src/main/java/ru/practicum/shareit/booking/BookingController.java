@@ -5,7 +5,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.Create;
-import ru.practicum.shareit.MyPageRequest;
+import ru.practicum.shareit.ShareitPageRequest;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.model.Status;
 import ru.practicum.shareit.booking.service.BookingService;
@@ -34,7 +34,7 @@ public class BookingController {
                                                        name = "size", defaultValue = "10") Integer size) {
         Status status = Status.from(stateParam).orElseThrow(
                 () -> new BadStatusException(stateParam));
-        final MyPageRequest pageRequest = new MyPageRequest(from, size, Sort.by("start").descending());
+        final ShareitPageRequest pageRequest = new ShareitPageRequest(from, size, Sort.by("start").descending());
         return bookingService.getAllUserBookings(userId, status, pageRequest);
     }
 
@@ -50,7 +50,7 @@ public class BookingController {
                                                            name = "size", defaultValue = "10") Integer size) {
         Status status = Status.from(stateParam).orElseThrow(
                 () -> new BadStatusException(stateParam));
-        final MyPageRequest pageRequest = new MyPageRequest(from, size, Sort.by("start").descending());
+        final ShareitPageRequest pageRequest = new ShareitPageRequest(from, size, Sort.by("start").descending());
         return bookingService.getAllUserItemBookings(userId, status, pageRequest);
     }
 

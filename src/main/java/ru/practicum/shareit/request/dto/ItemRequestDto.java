@@ -17,7 +17,6 @@ import java.util.List;
 @Setter
 @ToString
 public class ItemRequestDto {
-    //@NotBlank(groups = {Create.class})
     private Long id;
 
     @NotBlank(groups = {Create.class})

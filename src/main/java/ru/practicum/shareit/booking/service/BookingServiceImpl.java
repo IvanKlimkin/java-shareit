@@ -3,7 +3,7 @@ package ru.practicum.shareit.booking.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.shareit.MyPageRequest;
+import ru.practicum.shareit.ShareitPageRequest;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.mapper.BookingMapper;
 import ru.practicum.shareit.booking.model.Booking;
@@ -31,7 +31,7 @@ public class BookingServiceImpl implements BookingService {
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
 
-    public List<BookingDto> getAllUserBookings(Long userId, Status status, MyPageRequest pageRequest) {
+    public List<BookingDto> getAllUserBookings(Long userId, Status status, ShareitPageRequest pageRequest) {
         User user = userRepository
                 .findById(userId).orElseThrow(() -> new ServerException("Такой User отсутствует"));
         List<Booking> bookings = new ArrayList<>();
@@ -55,7 +55,7 @@ public class BookingServiceImpl implements BookingService {
         return bookingMapper.toBookingDto(bookings);
     }
 
-    public List<BookingDto> getAllUserItemBookings(Long userId, Status status, MyPageRequest pageRequest) {
+    public List<BookingDto> getAllUserItemBookings(Long userId, Status status, ShareitPageRequest pageRequest) {
 
         User user = userRepository
                 .findById(userId).orElseThrow(() -> new ServerException("Такой User отсутствует"));

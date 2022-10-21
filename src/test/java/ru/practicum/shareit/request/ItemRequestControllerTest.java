@@ -10,7 +10,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import ru.practicum.shareit.MyPageRequest;
+import ru.practicum.shareit.ShareitPageRequest;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.service.ItemRequestService;
@@ -43,18 +43,18 @@ class ItemRequestControllerTest {
 
     private ItemRequestDto itemRequestDto;
 
-    private MyPageRequest pageRequest;
+    private ShareitPageRequest pageRequest;
 
     @BeforeEach
     void beforeEach() {
         user = new User(1L, "user1@email", "user 1");
         item = new Item(1L, "Item 1", "Item description", true, user, null);
         itemRequestDto = new ItemRequestDto(1L, "request description", user, testTime, List.of(item));
-        pageRequest = new MyPageRequest(0, 10, Sort.by("created"));
+        pageRequest = new ShareitPageRequest(0, 10, Sort.by("created"));
     }
 
     @Test
-    void addRequest() throws Exception {
+    void addRequestTest() throws Exception {
         when(itemRequestService.addNewItemRequest(anyLong(), any()))
                 .thenReturn(itemRequestDto);
 
@@ -71,7 +71,7 @@ class ItemRequestControllerTest {
     }
 
     @Test
-    void getAll() throws Exception {
+    void getAllTest() throws Exception {
         when(itemRequestService.getAllItemRequestsByUserId(1L))
                 .thenReturn(List.of(itemRequestDto));
 
@@ -86,7 +86,7 @@ class ItemRequestControllerTest {
     }
 
     @Test
-    void getAllPage() throws Exception {
+    void getAllPageTest() throws Exception {
         when(itemRequestService.getAllItemRequests(1L, pageRequest))
                 .thenReturn(List.of(itemRequestDto));
 
@@ -101,7 +101,7 @@ class ItemRequestControllerTest {
     }
 
     @Test
-    void getRequestById() throws Exception {
+    void getRequestByIdTest() throws Exception {
         when(itemRequestService.getItemRequestById(1L, 2L))
                 .thenReturn(itemRequestDto);
 

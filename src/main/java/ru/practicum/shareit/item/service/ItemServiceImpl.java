@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.shareit.MyPageRequest;
+import ru.practicum.shareit.ShareitPageRequest;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingInfo;
 import ru.practicum.shareit.booking.model.Status;
@@ -43,7 +43,7 @@ public class ItemServiceImpl implements ItemService {
     private final CommentMapper commentMapper;
 
     @Override
-    public List<ItemBookingDto> getItems(Long ownerId, MyPageRequest pageRequest) {
+    public List<ItemBookingDto> getItems(Long ownerId, ShareitPageRequest pageRequest) {
         User owner = userRepository.findById(ownerId).orElseThrow(() -> new ServerException("Такой User отсутствует"));
         List<ItemBookingDto> listBookingItems = new ArrayList<>();
         for (Item item : itemRepository.findItemsByOwner(owner)) {
@@ -78,7 +78,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemDto> searchItems(String text, MyPageRequest pageRequest) {
+    public List<ItemDto> searchItems(String text, ShareitPageRequest pageRequest) {
         return itemMapper.toDto(itemRepository.search(text, pageRequest));
     }
 

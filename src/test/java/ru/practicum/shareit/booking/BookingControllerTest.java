@@ -10,7 +10,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import ru.practicum.shareit.MyPageRequest;
+import ru.practicum.shareit.ShareitPageRequest;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.model.Status;
 import ru.practicum.shareit.booking.service.BookingService;
@@ -38,9 +38,9 @@ public class BookingControllerTest {
 
     private final LocalDateTime testTime = LocalDateTime.of(2022, 12, 01, 00, 00, 00);
     @MockBean
-    BookingService bookingService;
+    private BookingService bookingService;
     @Autowired
-    MockMvc mockMvc;
+    private MockMvc mockMvc;
     @Autowired
     private ObjectMapper objectMapper;
     private User user;
@@ -48,7 +48,7 @@ public class BookingControllerTest {
     private Item item;
     private ItemDto itemDto;
     private ItemBookingDto itemBookingDto;
-    private MyPageRequest pageRequest;
+    private ShareitPageRequest pageRequest;
     private CommentDto commentDto;
 
     private BookingDto bookingDto1;
@@ -69,12 +69,12 @@ public class BookingControllerTest {
                 1L, testTime, testTime.plusMinutes(5), userIdDto, itemInfoDto, Status.APPROVED, 1L);
         bookingDto2 = new BookingDto(
                 2L, testTime.plusMinutes(10), testTime.plusMinutes(15), userIdDto, itemInfoDto, Status.APPROVED, 1L);
-        pageRequest = new MyPageRequest(0, 10, Sort.by("start").descending());
+        pageRequest = new ShareitPageRequest(0, 10, Sort.by("start").descending());
 
     }
 
     @Test
-    void getALLUserBookings() throws Exception {
+    void getALLUserBookingsTest() throws Exception {
         when(bookingService.getAllUserBookings(anyLong(), any(), any()))
                 .thenReturn(List.of(bookingDto1, bookingDto2));
 
@@ -91,7 +91,7 @@ public class BookingControllerTest {
     }
 
     @Test
-    void getALLUserItemBookings() throws Exception {
+    void getALLUserItemBookingsTest() throws Exception {
         when(bookingService.getAllUserItemBookings(1L, Status.ALL, pageRequest))
                 .thenReturn(List.of(bookingDto1, bookingDto2));
 
@@ -108,7 +108,7 @@ public class BookingControllerTest {
     }
 
     @Test
-    void addBooking() throws Exception {
+    void addBookingTest() throws Exception {
         when(bookingService.addBooking(anyLong(), any()))
                 .thenReturn(bookingDto1);
 
@@ -125,7 +125,7 @@ public class BookingControllerTest {
     }
 
     @Test
-    void getById() throws Exception {
+    void getByIdTest() throws Exception {
         when(bookingService.getBookingById(1L, 1L))
                 .thenReturn(bookingDto1);
 
@@ -139,7 +139,7 @@ public class BookingControllerTest {
     }
 
     @Test
-    void setStatus() throws Exception {
+    void setStatusTest() throws Exception {
         when(bookingService.setStatusByUser(1L, 1L, true))
                 .thenReturn(bookingDto1);
 

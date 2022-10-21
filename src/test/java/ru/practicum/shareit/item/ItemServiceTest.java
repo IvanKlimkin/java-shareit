@@ -8,7 +8,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Sort;
-import ru.practicum.shareit.MyPageRequest;
+import ru.practicum.shareit.ShareitPageRequest;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.Status;
 import ru.practicum.shareit.booking.repository.BookingRepository;
@@ -37,8 +37,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
@@ -74,7 +73,7 @@ public class ItemServiceTest {
     @Autowired
     private CommentMapper commentMapper;
 
-    private MyPageRequest pageRequest;
+    private ShareitPageRequest pageRequest;
 
     private User user;
     private Item item;
@@ -104,7 +103,7 @@ public class ItemServiceTest {
         itemService = new ItemServiceImpl(
                 itemRepository, itemRequestRepository, itemMapper, userRepository, bookingRepository, commentRepository,
                 commentMapper);
-        pageRequest = new MyPageRequest(0, 10, Sort.unsorted());
+        pageRequest = new ShareitPageRequest(0, 10, Sort.unsorted());
         user = new User(1L, "user1@email", "user 1");
         item = new Item(1L, "Item 1", "Item description", true, user, null);
         itemUpdName = new ItemDto(null, "Item 1 Updated", null, true, null);
@@ -168,22 +167,20 @@ public class ItemServiceTest {
     }
 
     @Test
-    void getAllTestEmptyUser() {
-        Exception exp = new ServerException("");
+    void getAllEmptyUserTest() {
         when(userRepository.findById(any()))
                 .thenReturn(Optional.empty());
-        try {
-            List<ItemBookingDto> itemBookings = itemService.getItems(1L, pageRequest);
-        } catch (ServerException e) {
-            exp = e;
-        }
+        ServerException exp = assertThrows(ServerException.class, () -> {
+            itemService.getItems(1L, pageRequest);
+        });
+
         assertNotNull(exp);
         assertEquals("Такой User отсутствует", exp.getMessage());
         verify(userRepository, times(1)).findById(any());
     }
 
     @Test
-    void getItemById() {
+    void getItemByIdTest() {
         when(itemRepository.findById(any()))
                 .thenReturn(Optional.ofNullable(item));
         when(bookingRepository.findBookingByItemAndStartAfter(
@@ -211,25 +208,21 @@ public class ItemServiceTest {
     }
 
     @Test
-    void getItemByWrongId() {
-        Exception exp = new ServerException("");
+    void getItemByWrongIdTest() {
         when(itemRepository.findById(any()))
                 .thenReturn(Optional.empty());
 
-        try {
-            ItemBookingDto itemBookingDto = itemService.getItemById(1L, 1L);
-        } catch (ServerException e) {
-            exp = e;
+        ServerException exp = assertThrows(ServerException.class, () -> {
+            itemService.getItemById(1L, 1L);
+        });
 
-            assertNotNull(exp);
-            assertEquals("Вещь с таким ID отсутствует.", exp.getMessage());
-            verify(itemRepository, times(1)).findById(any());
-
-        }
+        assertNotNull(exp);
+        assertEquals("Вещь с таким ID отсутствует.", exp.getMessage());
+        verify(itemRepository, times(1)).findById(any());
     }
 
     @Test
-    void searchItems() {
+    void searchItemsTest() {
         when(itemRepository.search("text", pageRequest))
                 .thenReturn(Collections.singletonList(item));
 
@@ -243,7 +236,7 @@ public class ItemServiceTest {
     }
 
     @Test
-    void addItem() {
+    void addItemTest() {
         when(userRepository.findById(any()))
                 .thenReturn(Optional.ofNullable(user));
         when(itemRepository.save(any()))
@@ -260,7 +253,7 @@ public class ItemServiceTest {
     }
 
     @Test
-    void addItemRequested() {
+    void addItemRequestedTest() {
         when(userRepository.findById(any()))
                 .thenReturn(Optional.ofNullable(user));
         when(itemRequestRepository.findById(anyLong()))
@@ -280,46 +273,38 @@ public class ItemServiceTest {
     }
 
     @Test
-    void addItemEmptyUser() {
-        Exception exp = new ServerException("");
+    void addItemEmptyUserTest() {
         when(userRepository.findById(any()))
                 .thenReturn(Optional.empty());
 
-        try {
-            ItemDto itemDtoReceived = itemService.addNewItem(1L, itemDto);
-        } catch (ServerException e) {
-            exp = e;
+        ServerException exp = assertThrows(ServerException.class, () -> {
+            itemService.addNewItem(1L, itemDto);
+        });
 
-            assertNotNull(exp);
-            assertEquals("Пользователь с таким ID или сущностью отсутствуют", exp.getMessage());
-            verify(userRepository, times(1)).findById(any());
-
-        }
+        assertNotNull(exp);
+        assertEquals("Пользователь с таким ID или сущностью отсутствуют", exp.getMessage());
+        verify(userRepository, times(1)).findById(any());
     }
 
     @Test
-    void addItemEmptyItem() {
-        Exception exp = new ServerException("");
+    void addItemEmptyItemTest() {
         when(userRepository.findById(any()))
                 .thenReturn(Optional.ofNullable(user));
         when(itemRequestRepository.findById(anyLong()))
                 .thenReturn(Optional.empty());
 
-        try {
-            ItemDto itemDtoReceived = itemService.addNewItem(1L, itemDtoRequested);
-        } catch (ServerException e) {
-            exp = e;
+        ServerException exp = assertThrows(ServerException.class, () -> {
+            itemService.addNewItem(1L, itemDtoRequested);
+        });
 
-            assertNotNull(exp);
-            assertEquals("No such ItemRequest in Db", exp.getMessage());
-            verify(userRepository, times(1)).findById(any());
-            verify(itemRequestRepository, times(1)).findById(anyLong());
-
-        }
+        assertNotNull(exp);
+        assertEquals("No such ItemRequest in Db", exp.getMessage());
+        verify(userRepository, times(1)).findById(any());
+        verify(itemRequestRepository, times(1)).findById(anyLong());
     }
 
     @Test
-    void addComment() {
+    void addCommentTest() {
         when(userRepository.findById(any()))
                 .thenReturn(Optional.ofNullable(user));
         when(itemRepository.findById(any()))
@@ -344,50 +329,38 @@ public class ItemServiceTest {
     }
 
     @Test
-    void addCommentEmptyUser() {
-        Exception exp = new ServerException("");
+    void addCommentEmptyUserTest() {
         when(userRepository.findById(any()))
                 .thenReturn(Optional.empty());
 
+        ServerException exp = assertThrows(ServerException.class, () -> {
+            itemService.addNewComment(1L, 1L, commentDto);
+        });
 
-        try {
-            CommentDto commentReceived = itemService.addNewComment(1L, 1L, commentDto);
-        } catch (ServerException e) {
-            exp = e;
-
-            assertNotNull(exp);
-            assertEquals("Пользователь с таким ID отсутствует", exp.getMessage());
-            verify(userRepository, times(1)).findById(any());
-
-        }
-
+        assertNotNull(exp);
+        assertEquals("Пользователь с таким ID отсутствует", exp.getMessage());
+        verify(userRepository, times(1)).findById(any());
     }
 
     @Test
-    void addCommentEmptyItem() {
-        Exception exp = new ServerException("");
+    void addCommentEmptyItemTest() {
         when(userRepository.findById(any()))
                 .thenReturn(Optional.of(user));
         when(itemRepository.findById(any()))
                 .thenReturn(Optional.empty());
 
-        try {
-            CommentDto commentReceived = itemService.addNewComment(1L, 1L, commentDto);
-        } catch (ServerException e) {
-            exp = e;
+        ServerException exp = assertThrows(ServerException.class, () -> {
+            itemService.addNewComment(1L, 1L, commentDto);
+        });
 
-            assertNotNull(exp);
-            assertEquals("Сущность с таким ID отсутствует", exp.getMessage());
-            verify(userRepository, times(1)).findById(any());
-            verify(itemRepository, times(1)).findById(any());
-
-        }
-
+        assertNotNull(exp);
+        assertEquals("Сущность с таким ID отсутствует", exp.getMessage());
+        verify(userRepository, times(1)).findById(any());
+        verify(itemRepository, times(1)).findById(any());
     }
 
     @Test
-    void addCommentEmptyBooking() {
-        Exception exp = new ValidationException("");
+    void addCommentEmptyBookingTest() {
         when(userRepository.findById(any()))
                 .thenReturn(Optional.of(user));
         when(itemRepository.findById(any()))
@@ -396,23 +369,19 @@ public class ItemServiceTest {
                 any(), any(), any(), any()))
                 .thenReturn(null);
 
-        try {
-            CommentDto commentReceived = itemService.addNewComment(1L, 1L, commentDto);
-        } catch (ValidationException e) {
-            exp = e;
-
-            assertNotNull(exp);
-            assertEquals("Только пользователь закончивший аренду может оставлять отзывы.", exp.getMessage());
-            verify(userRepository, times(1)).findById(any());
-            verify(itemRepository, times(1)).findById(any());
-            verify(bookingRepository, times(1)).findBookingByBookerAndItemAndStatusAndEndIsBefore(
-                    any(), any(), any(), any());
-        }
-
+        ValidationException exp = assertThrows(ValidationException.class, () -> {
+            itemService.addNewComment(1L, 1L, commentDto);
+        });
+        assertNotNull(exp);
+        assertEquals("Только пользователь закончивший аренду может оставлять отзывы.", exp.getMessage());
+        verify(userRepository, times(1)).findById(any());
+        verify(itemRepository, times(1)).findById(any());
+        verify(bookingRepository, times(1)).findBookingByBookerAndItemAndStatusAndEndIsBefore(
+                any(), any(), any(), any());
     }
 
     @Test
-    void updateItem() {
+    void updateItemTest() {
         when(userRepository.findById(any()))
                 .thenReturn(Optional.ofNullable(user));
         when(itemRepository.findItemByIdAndOwner(anyLong(), any()))
@@ -429,7 +398,7 @@ public class ItemServiceTest {
     }
 
     @Test
-    void updateItemNotAvailable() {
+    void updateItemNotAvailableTest() {
         when(userRepository.findById(any()))
                 .thenReturn(Optional.ofNullable(user));
         when(itemRepository.findItemByIdAndOwner(anyLong(), any()))
@@ -446,42 +415,34 @@ public class ItemServiceTest {
     }
 
     @Test
-    void updateItemWrongUser() {
-        Exception exp = new ServerException("");
+    void updateItemWrongUserTest() {
         when(userRepository.findById(any()))
                 .thenReturn(Optional.empty());
-
-        try {
-            ItemDto itemReceived = itemService.updateItem(1L, 1L, itemDto);
-        } catch (ServerException e) {
-            exp = e;
-            assertNotNull(exp);
-            assertEquals("Пользователь с таким ID или сущностью отсутствуют", exp.getMessage());
-            verify(userRepository, times(1)).findById(anyLong());
-        }
+        ServerException exp = assertThrows(ServerException.class, () -> {
+            itemService.updateItem(1L, 1L, itemDto);
+        });
+        assertNotNull(exp);
+        assertEquals("Пользователь с таким ID или сущностью отсутствуют", exp.getMessage());
+        verify(userRepository, times(1)).findById(anyLong());
     }
 
     @Test
-    void updateItemWrongItem() {
-        Exception exp = new ServerException("");
+    void updateItemWrongItemTest() {
         when(userRepository.findById(any()))
                 .thenReturn(Optional.of(user));
         when(itemRepository.findItemByIdAndOwner(anyLong(), any()))
                 .thenReturn(null);
-
-        try {
-            ItemDto itemReceived = itemService.updateItem(1L, 1L, itemDto);
-        } catch (ServerException e) {
-            exp = e;
-            assertNotNull(exp);
-            assertEquals("Сущность с таким ID отсутствуют", exp.getMessage());
-            verify(userRepository, times(1)).findById(anyLong());
-            verify(itemRepository, times(1)).findItemByIdAndOwner(anyLong(), any());
-        }
+        ServerException exp = assertThrows(ServerException.class, () -> {
+            itemService.updateItem(1L, 1L, itemDto);
+        });
+        assertNotNull(exp);
+        assertEquals("Сущность с таким ID отсутствуют", exp.getMessage());
+        verify(userRepository, times(1)).findById(anyLong());
+        verify(itemRepository, times(1)).findItemByIdAndOwner(anyLong(), any());
     }
 
     @Test
-    void deleteItem() {
+    void deleteItemTest() {
         itemService.deleteItem(1L, 1L);
         verify(itemRepository, times(1)).deleteById(1L);
     }
