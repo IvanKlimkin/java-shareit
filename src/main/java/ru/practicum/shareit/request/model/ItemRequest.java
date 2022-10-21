@@ -2,10 +2,13 @@ package ru.practicum.shareit.request.model;
 
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -28,5 +31,9 @@ public class ItemRequest {
 
     @CreationTimestamp
     private LocalDateTime created;
+
+    @OneToMany
+    @JoinColumn(name = "request_id")
+    private List<Item> items = new ArrayList<>();
 
 }

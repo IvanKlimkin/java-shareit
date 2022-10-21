@@ -31,8 +31,7 @@ public class Item {
     @JoinColumn(name = "owner_id", nullable = false)
     private User owner;
 
-/*    @OneToOne
-    @JoinColumn(name = "request_id")
-    private ItemRequest request;
-*/
+    @Column(name = "request_id")
+    private Long requestId;
+
 }
