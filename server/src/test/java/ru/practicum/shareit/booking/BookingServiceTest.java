@@ -108,16 +108,16 @@ class BookingServiceTest {
                 user, pageRequest))
                 .thenReturn(List.of(booking));
 
-
+        assertDoesNotThrow(() -> bookingService.getAllUserBookings(1L, State.ALL, pageRequest));
         final List<BookingDto> BookingsDto = bookingService.getAllUserBookings(1L, State.ALL, pageRequest);
 
         assertNotNull(BookingsDto);
         assertEquals(1, BookingsDto.size());
         assertEquals(BookingsDto.get(0).getId(), bookingDto1.getId());
         assertEquals(BookingsDto.get(0).getItem().getName(), bookingDto1.getItem().getName());
-        verify(userRepository, times(1)).findById(any());
-        verify(bookingRepository, times(1)).findBookingsByBooker(user, pageRequest);
 
+        verify(userRepository, times(2)).findById(any());
+        verify(bookingRepository, times(2)).findBookingsByBooker(user, pageRequest);
     }
 
     @Test
@@ -128,16 +128,17 @@ class BookingServiceTest {
                 any(), any(), any()))
                 .thenReturn(List.of(booking));
 
+        assertDoesNotThrow(() -> bookingService.getAllUserBookings(1L, State.FUTURE, pageRequest));
         final List<BookingDto> BookingsDto = bookingService.getAllUserBookings(1L, State.FUTURE, pageRequest);
 
         assertNotNull(BookingsDto);
         assertEquals(1, BookingsDto.size());
         assertEquals(BookingsDto.get(0).getId(), bookingDto1.getId());
         assertEquals(BookingsDto.get(0).getItem().getName(), bookingDto1.getItem().getName());
-        verify(userRepository, times(1)).findById(any());
-        verify(bookingRepository, times(1)).findBookingsByBookerAndStartAfter(
-                any(), any(), any());
 
+        verify(userRepository, times(2)).findById(any());
+        verify(bookingRepository, times(2)).findBookingsByBookerAndStartAfter(
+                any(), any(), any());
     }
 
     @Test
@@ -147,16 +148,17 @@ class BookingServiceTest {
         when(bookingRepository.findBookingsByBookerAndStartIsBeforeAndEndIsAfter(any(), any(), any(), any()))
                 .thenReturn(List.of(booking));
 
+        assertDoesNotThrow(() -> bookingService.getAllUserBookings(1L, State.CURRENT, pageRequest));
         final List<BookingDto> BookingsDto = bookingService.getAllUserBookings(1L, State.CURRENT, pageRequest);
 
         assertNotNull(BookingsDto);
         assertEquals(1, BookingsDto.size());
         assertEquals(BookingsDto.get(0).getId(), bookingDto1.getId());
         assertEquals(BookingsDto.get(0).getItem().getName(), bookingDto1.getItem().getName());
-        verify(userRepository, times(1)).findById(any());
-        verify(bookingRepository, times(1))
-                .findBookingsByBookerAndStartIsBeforeAndEndIsAfter(any(), any(), any(), any());
 
+        verify(userRepository, times(2)).findById(any());
+        verify(bookingRepository, times(2))
+                .findBookingsByBookerAndStartIsBeforeAndEndIsAfter(any(), any(), any(), any());
     }
 
     @Test
@@ -166,16 +168,17 @@ class BookingServiceTest {
         when(bookingRepository.findBookingsByBookerAndEndBefore(any(), any(), any()))
                 .thenReturn(List.of(booking));
 
+        assertDoesNotThrow(() -> bookingService.getAllUserBookings(1L, State.PAST, pageRequest));
         final List<BookingDto> BookingsDto = bookingService.getAllUserBookings(1L, State.PAST, pageRequest);
 
         assertNotNull(BookingsDto);
         assertEquals(1, BookingsDto.size());
         assertEquals(BookingsDto.get(0).getId(), bookingDto1.getId());
         assertEquals(BookingsDto.get(0).getItem().getName(), bookingDto1.getItem().getName());
-        verify(userRepository, times(1)).findById(any());
-        verify(bookingRepository, times(1))
-                .findBookingsByBookerAndEndBefore(any(), any(), any());
 
+        verify(userRepository, times(2)).findById(any());
+        verify(bookingRepository, times(2))
+                .findBookingsByBookerAndEndBefore(any(), any(), any());
     }
 
     @Test
@@ -185,16 +188,17 @@ class BookingServiceTest {
         when(bookingRepository.findBookingsByBookerAndState(any(), any(), any()))
                 .thenReturn(List.of(booking));
 
+        assertDoesNotThrow(() -> bookingService.getAllUserBookings(1L, State.WAITING, pageRequest));
         final List<BookingDto> BookingsDto = bookingService.getAllUserBookings(1L, State.WAITING, pageRequest);
 
         assertNotNull(BookingsDto);
         assertEquals(1, BookingsDto.size());
         assertEquals(BookingsDto.get(0).getId(), bookingDto1.getId());
         assertEquals(BookingsDto.get(0).getItem().getName(), bookingDto1.getItem().getName());
-        verify(userRepository, times(1)).findById(any());
-        verify(bookingRepository, times(1))
-                .findBookingsByBookerAndState(any(), any(), any());
 
+        verify(userRepository, times(2)).findById(any());
+        verify(bookingRepository, times(2))
+                .findBookingsByBookerAndState(any(), any(), any());
     }
 
     @Test
@@ -221,16 +225,17 @@ class BookingServiceTest {
         when(bookingRepository.findBookingsByItemIn(any(), any()))
                 .thenReturn(List.of(booking));
 
+        assertDoesNotThrow(() -> bookingService.getAllUserItemBookings(1L, State.ALL, pageRequest));
         final List<BookingDto> BookingsDto = bookingService.getAllUserItemBookings(1L, State.ALL, pageRequest);
 
         assertNotNull(BookingsDto);
         assertEquals(1, BookingsDto.size());
         assertEquals(BookingsDto.get(0).getId(), bookingDto1.getId());
         assertEquals(BookingsDto.get(0).getItem().getName(), bookingDto1.getItem().getName());
-        verify(userRepository, times(1)).findById(any());
-        verify(itemRepository, times(1)).findItemsByOwner(user);
-        verify(bookingRepository, times(1)).findBookingsByItemIn(any(), any());
 
+        verify(userRepository, times(2)).findById(any());
+        verify(itemRepository, times(2)).findItemsByOwner(user);
+        verify(bookingRepository, times(2)).findBookingsByItemIn(any(), any());
     }
 
     @Test
@@ -242,16 +247,17 @@ class BookingServiceTest {
         when(bookingRepository.findBookingsByItemInAndStartAfter(any(), any(), any()))
                 .thenReturn(List.of(booking));
 
+        assertDoesNotThrow(() -> bookingService.getAllUserItemBookings(1L, State.FUTURE, pageRequest));
         final List<BookingDto> BookingsDto = bookingService.getAllUserItemBookings(1L, State.FUTURE, pageRequest);
 
         assertNotNull(BookingsDto);
         assertEquals(1, BookingsDto.size());
         assertEquals(BookingsDto.get(0).getId(), bookingDto1.getId());
         assertEquals(BookingsDto.get(0).getItem().getName(), bookingDto1.getItem().getName());
-        verify(userRepository, times(1)).findById(any());
-        verify(itemRepository, times(1)).findItemsByOwner(user);
-        verify(bookingRepository, times(1)).findBookingsByItemInAndStartAfter(any(), any(), any());
 
+        verify(userRepository, times(2)).findById(any());
+        verify(itemRepository, times(2)).findItemsByOwner(user);
+        verify(bookingRepository, times(2)).findBookingsByItemInAndStartAfter(any(), any(), any());
     }
 
     @Test
@@ -263,16 +269,17 @@ class BookingServiceTest {
         when(bookingRepository.checkCurrent(any(), any(), any()))
                 .thenReturn(List.of(booking));
 
+        assertDoesNotThrow(() -> bookingService.getAllUserItemBookings(1L, State.CURRENT, pageRequest));
         final List<BookingDto> BookingsDto = bookingService.getAllUserItemBookings(1L, State.CURRENT, pageRequest);
 
         assertNotNull(BookingsDto);
         assertEquals(1, BookingsDto.size());
         assertEquals(BookingsDto.get(0).getId(), bookingDto1.getId());
         assertEquals(BookingsDto.get(0).getItem().getName(), bookingDto1.getItem().getName());
-        verify(userRepository, times(1)).findById(any());
-        verify(itemRepository, times(1)).findItemsByOwner(user);
-        verify(bookingRepository, times(1)).checkCurrent(any(), any(), any());
 
+        verify(userRepository, times(2)).findById(any());
+        verify(itemRepository, times(2)).findItemsByOwner(user);
+        verify(bookingRepository, times(2)).checkCurrent(any(), any(), any());
     }
 
     @Test
@@ -284,16 +291,17 @@ class BookingServiceTest {
         when(bookingRepository.findBookingsByItemInAndEndBefore(any(), any(), any()))
                 .thenReturn(List.of(booking));
 
+        assertDoesNotThrow(() -> bookingService.getAllUserItemBookings(1L, State.PAST, pageRequest));
         final List<BookingDto> BookingsDto = bookingService.getAllUserItemBookings(1L, State.PAST, pageRequest);
 
         assertNotNull(BookingsDto);
         assertEquals(1, BookingsDto.size());
         assertEquals(BookingsDto.get(0).getId(), bookingDto1.getId());
         assertEquals(BookingsDto.get(0).getItem().getName(), bookingDto1.getItem().getName());
-        verify(userRepository, times(1)).findById(any());
-        verify(itemRepository, times(1)).findItemsByOwner(user);
-        verify(bookingRepository, times(1)).findBookingsByItemInAndEndBefore(any(), any(), any());
 
+        verify(userRepository, times(2)).findById(any());
+        verify(itemRepository, times(2)).findItemsByOwner(user);
+        verify(bookingRepository, times(2)).findBookingsByItemInAndEndBefore(any(), any(), any());
     }
 
     @Test
@@ -305,16 +313,17 @@ class BookingServiceTest {
         when(bookingRepository.findBookingsByItemInAndState(any(), any(), any()))
                 .thenReturn(List.of(booking));
 
+        assertDoesNotThrow(() -> bookingService.getAllUserItemBookings(1L, State.WAITING, pageRequest));
         final List<BookingDto> BookingsDto = bookingService.getAllUserItemBookings(1L, State.WAITING, pageRequest);
 
         assertNotNull(BookingsDto);
         assertEquals(1, BookingsDto.size());
         assertEquals(BookingsDto.get(0).getId(), bookingDto1.getId());
         assertEquals(BookingsDto.get(0).getItem().getName(), bookingDto1.getItem().getName());
-        verify(userRepository, times(1)).findById(any());
-        verify(itemRepository, times(1)).findItemsByOwner(user);
-        verify(bookingRepository, times(1)).findBookingsByItemInAndState(any(), any(), any());
 
+        verify(userRepository, times(2)).findById(any());
+        verify(itemRepository, times(2)).findItemsByOwner(user);
+        verify(bookingRepository, times(2)).findBookingsByItemInAndState(any(), any(), any());
     }
 
     @Test
@@ -345,18 +354,18 @@ class BookingServiceTest {
                 .save(any()))
                 .thenReturn(booking);
 
-
+        assertDoesNotThrow(() -> bookingService.addBooking(2L, bookingDto1));
         final BookingDto bookingDto = bookingService.addBooking(2L, bookingDto1);
 
         assertNotNull(bookingDto);
         assertEquals(bookingDto.getId(), bookingDto1.getId());
         assertEquals(bookingDto.getItem().getName(), bookingDto1.getItem().getName());
-        verify(bookingRepository, times(1)).findBookingsByItemAndEndIsBeforeAndStartIsAfter(
-                booking.getItem(), booking.getStart(), booking.getEnd());
-        verify(bookingRepository, times(1)).save(any());
-        verify(userRepository, times(1)).findById(anyLong());
-        verify(itemRepository, times(1)).findById(anyLong());
 
+        verify(bookingRepository, times(2)).findBookingsByItemAndEndIsBeforeAndStartIsAfter(
+                booking.getItem(), booking.getStart(), booking.getEnd());
+        verify(bookingRepository, times(2)).save(any());
+        verify(userRepository, times(2)).findById(anyLong());
+        verify(itemRepository, times(2)).findById(anyLong());
     }
 
     @Test
@@ -406,13 +415,13 @@ class BookingServiceTest {
                 .findById(1L))
                 .thenReturn(Optional.of(booking));
 
+        assertDoesNotThrow(() -> bookingService.getBookingById(1L, 1L));
         final BookingDto bookingDto = bookingService.getBookingById(1L, 1L);
 
         assertNotNull(bookingDto);
         assertEquals(bookingDto.getId(), bookingDto1.getId());
         assertEquals(bookingDto.getItem().getName(), bookingDto1.getItem().getName());
-        verify(bookingRepository, times(1)).findById(1L);
-
+        verify(bookingRepository, times(2)).findById(1L);
     }
 
     @Test
@@ -455,6 +464,7 @@ class BookingServiceTest {
         assertNotNull(bookingDto);
         assertEquals(bookingDto.getId(), bookingDto1.getId());
         assertEquals(bookingDto.getItem().getName(), bookingDto1.getItem().getName());
+
         verify(bookingRepository, times(1)).findById(1L);
     }
 

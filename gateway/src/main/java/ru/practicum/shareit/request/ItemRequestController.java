@@ -1,7 +1,6 @@
 package ru.practicum.shareit.request;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
@@ -15,7 +14,6 @@ import javax.validation.constraints.PositiveOrZero;
 @Controller
 @RequestMapping(path = "/requests")
 @RequiredArgsConstructor
-@Slf4j
 public class ItemRequestController {
 
     private final ItemRequestClient itemRequestClient;
@@ -37,7 +35,7 @@ public class ItemRequestController {
                                                              name = "from", defaultValue = "0") Integer from,
                                                      @Positive @RequestParam(
                                                              name = "size", defaultValue = "10") Integer size) {
-       return itemRequestClient.getAllItemRequests(userId, from, size);
+        return itemRequestClient.getAllItemRequests(userId, from, size);
     }
 
     @GetMapping("/{itemRequestId}")

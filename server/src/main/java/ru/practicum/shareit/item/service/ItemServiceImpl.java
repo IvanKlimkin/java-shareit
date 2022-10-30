@@ -56,7 +56,7 @@ public class ItemServiceImpl implements ItemService {
         Booking nextBooking = bookingRepository.findTopByItemAndStartAfter(
                 item, LocalDateTime.now(), Sort.by(Sort.Order.desc("start")));
         Booking lastBooking = bookingRepository.findTopByItemAndEndBefore(
-                item, LocalDateTime.now()/*.plusHours(3)*/, Sort.by("end"));
+                item, LocalDateTime.now(), Sort.by("end"));
         ItemBookingDto itemBookingDto = new ItemBookingDto(
                 item.getId(),
                 item.getName(),
@@ -100,7 +100,7 @@ public class ItemServiceImpl implements ItemService {
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new ServerException("Сущность с таким ID отсутствует"));
         Booking booking = bookingRepository.findBookingByBookerAndItemAndStateAndEndIsBefore(
-                author, item, State.APPROVED, LocalDateTime.now()/*.plusHours(10)*/);
+                author, item, State.APPROVED, LocalDateTime.now());
         if (booking != null) {
             return commentMapper.toDto(commentRepository.save(commentMapper.toComment(commentDto, item, author)));
         } else throw new ValidationException("Только пользователь закончивший аренду может оставлять отзывы.");

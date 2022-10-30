@@ -13,7 +13,6 @@ CREATE TABLE IF NOT EXISTS requests
     description  VARCHAR(255),
     requestor_id BIGINT                                  NOT NULL,
     created      TIMESTAMP WITHOUT TIME ZONE             NOT NULL,
-    --request_id   BIGINT,
     CONSTRAINT pk_request PRIMARY KEY (id),
     CONSTRAINT fk_request_user
         FOREIGN KEY (requestor_id) REFERENCES users ON DELETE CASCADE

@@ -44,11 +44,11 @@ public class BookingServiceImpl implements BookingService {
         } else if (state == State.CURRENT) {
             LocalDateTime currentTime = LocalDateTime.now();
             bookings = bookingRepository.findBookingsByBookerAndStartIsBeforeAndEndIsAfter(
-                    user, currentTime/*.plusHours(3)*/, currentTime/*.plusHours(3)*/, pageRequest);
+                    user, currentTime, currentTime, pageRequest);
         } else if (state == State.PAST) {
             LocalDateTime currentTime = LocalDateTime.now();
             bookings = bookingRepository.findBookingsByBookerAndEndBefore(
-                    user, currentTime/*.plusHours(3)*/, pageRequest);
+                    user, currentTime, pageRequest);
         } else {
             bookings = bookingRepository.findBookingsByBookerAndState(user, state, pageRequest);
         }
@@ -69,11 +69,11 @@ public class BookingServiceImpl implements BookingService {
                     userItems, NOW_MOMENT, pageRequest);
         } else if (state.equals(State.CURRENT)) {
             LocalDateTime currentTime = LocalDateTime.now();
-            userItemBookings = bookingRepository.checkCurrent(userItems, currentTime/*.plusHours(3)*/, pageRequest);
+            userItemBookings = bookingRepository.checkCurrent(userItems, currentTime, pageRequest);
         } else if (state == State.PAST) {
             LocalDateTime currentTime = LocalDateTime.now();
             userItemBookings = bookingRepository.findBookingsByItemInAndEndBefore(
-                    userItems, currentTime/*.plusHours(3)*/, pageRequest);
+                    userItems, currentTime, pageRequest);
         } else {
             userItemBookings = bookingRepository.findBookingsByItemInAndState(userItems, state, pageRequest);
         }

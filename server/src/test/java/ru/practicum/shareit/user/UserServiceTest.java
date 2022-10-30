@@ -22,7 +22,6 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-
 class UserServiceTest {
 
     @Mock
@@ -59,11 +58,13 @@ class UserServiceTest {
         when(userRepository.findAll())
                 .thenReturn(userList);
 
+        assertDoesNotThrow(() -> userService.getAllUsers());
         final List<UserDto> userDtoListCompare = userService.getAllUsers();
 
         assertEquals(1, userDtoListCompare.size());
         assertEquals(userDto.getEmail(), userDtoListCompare.get(0).getEmail());
-        verify(userRepository, times(1)).findAll();
+
+        verify(userRepository, times(2)).findAll();
     }
 
     @Test
@@ -71,13 +72,14 @@ class UserServiceTest {
         when(userRepository.findById(1L))
                 .thenReturn(Optional.ofNullable(user));
 
+        assertDoesNotThrow(() -> userService.getUserById(1L));
         UserDto userFromService = userService.getUserById(1L);
 
         assertNotNull(userFromService);
         assertEquals(1, userFromService.getId());
         assertEquals(user.getName(), userFromService.getName());
         assertEquals(user.getEmail(), userFromService.getEmail());
-        verify(userRepository, times(1)).findById(anyLong());
+        verify(userRepository, times(2)).findById(anyLong());
     }
 
     @Test
@@ -97,12 +99,13 @@ class UserServiceTest {
         when(userRepository.save(any()))
                 .thenReturn(user);
 
+        assertDoesNotThrow(() -> userService.addNewUser(userDto));
         UserDto userReceived = userService.addNewUser(userDto);
 
         assertEquals(1, userReceived.getId());
         assertEquals(user.getName(), userReceived.getName());
         assertEquals(user.getEmail(), userReceived.getEmail());
-        verify(userRepository, times(1)).save(any());
+        verify(userRepository, times(2)).save(any());
     }
 
     @Test
@@ -113,14 +116,15 @@ class UserServiceTest {
         when(userRepository.save(user))
                 .thenReturn(userNameUpd);
 
+        assertDoesNotThrow(() -> userService.updateUser(1L, userNameUpdDto));
         UserDto updUser = userService.updateUser(1L, userNameUpdDto);
 
         assertEquals(userNameUpd.getId(), updUser.getId());
         assertEquals(userNameUpd.getName(), updUser.getName());
         assertEquals(userNameUpd.getEmail(), updUser.getEmail());
 
-        verify(userRepository, times(1)).getReferenceById(1L);
-        verify(userRepository, times(1)).save(user);
+        verify(userRepository, times(2)).getReferenceById(1L);
+        verify(userRepository, times(2)).save(user);
     }
 
     @Test
@@ -131,14 +135,15 @@ class UserServiceTest {
         when(userRepository.save(user))
                 .thenReturn(userEmailUpd);
 
+        assertDoesNotThrow(() -> userService.updateUser(1L, userEmailUpdDto));
         UserDto updUser = userService.updateUser(1L, userEmailUpdDto);
 
         assertEquals(userEmailUpd.getId(), updUser.getId());
         assertEquals(userEmailUpd.getName(), updUser.getName());
         assertEquals(userEmailUpd.getEmail(), updUser.getEmail());
 
-        verify(userRepository, times(1)).getReferenceById(1L);
-        verify(userRepository, times(1)).save(user);
+        verify(userRepository, times(2)).getReferenceById(1L);
+        verify(userRepository, times(2)).save(user);
     }
 
     @Test
@@ -149,13 +154,14 @@ class UserServiceTest {
         when(userRepository.save(user))
                 .thenReturn(user);
 
+        assertDoesNotThrow(() -> userService.updateUser(1L, userEmptyUpdDto));
         UserDto updUser = userService.updateUser(1L, userEmptyUpdDto);
 
         assertEquals(user.getId(), updUser.getId());
         assertEquals(user.getName(), updUser.getName());
         assertEquals(user.getEmail(), updUser.getEmail());
-        verify(userRepository, times(1)).getReferenceById(1L);
-        verify(userRepository, times(1)).save(user);
+        verify(userRepository, times(2)).getReferenceById(1L);
+        verify(userRepository, times(2)).save(user);
 
     }
 }

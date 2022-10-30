@@ -74,13 +74,15 @@ class ItemRequestServiceTest {
         when(itemRequestRepository.save(any()))
                 .thenReturn(itemRequest);
 
+        assertDoesNotThrow(() -> itemRequestService.addNewItemRequest(1L, itemRequestDto));
         final ItemRequestDto dto = itemRequestService.addNewItemRequest(1L, itemRequestDto);
 
         assertNotNull(dto);
         assertEquals(dto.getId(), itemRequest.getId());
         assertEquals(dto.getRequestor().getName(), user.getName());
-        verify(userRepository, times(1)).findById(1L);
-        verify(itemRequestRepository, times(1)).save(any());
+
+        verify(userRepository, times(2)).findById(1L);
+        verify(itemRequestRepository, times(2)).save(any());
 
     }
 
@@ -103,15 +105,16 @@ class ItemRequestServiceTest {
         when(itemRequestRepository.findItemRequestsByRequestor(user))
                 .thenReturn(List.of(itemRequest));
 
+        assertDoesNotThrow(() -> itemRequestService.getAllItemRequestsByUserId(1L));
         final List<ItemRequestDto> dtos = itemRequestService.getAllItemRequestsByUserId(1L);
 
         assertNotNull(dtos);
         assertEquals(1, dtos.size());
         assertEquals(itemRequest.getId(), dtos.get(0).getId());
         assertEquals(user.getName(), dtos.get(0).getRequestor().getName());
-        verify(userRepository, times(1)).findById(1L);
-        verify(itemRequestRepository, times(1)).findItemRequestsByRequestor(user);
 
+        verify(userRepository, times(2)).findById(1L);
+        verify(itemRequestRepository, times(2)).findItemRequestsByRequestor(user);
     }
 
     @Test
@@ -133,15 +136,16 @@ class ItemRequestServiceTest {
         when(itemRequestRepository.findItemRequestsByRequestorNot(user, pageRequest))
                 .thenReturn(List.of(itemRequest));
 
+        assertDoesNotThrow(() -> itemRequestService.getAllItemRequests(1L, pageRequest));
         final List<ItemRequestDto> dtos = itemRequestService.getAllItemRequests(1L, pageRequest);
 
         assertNotNull(dtos);
         assertEquals(1, dtos.size());
         assertEquals(itemRequest.getId(), dtos.get(0).getId());
         assertEquals(user.getName(), dtos.get(0).getRequestor().getName());
-        verify(userRepository, times(1)).findById(1L);
-        verify(itemRequestRepository, times(1)).findItemRequestsByRequestorNot(user, pageRequest);
 
+        verify(userRepository, times(2)).findById(1L);
+        verify(itemRequestRepository, times(2)).findItemRequestsByRequestorNot(user, pageRequest);
     }
 
     @Test
@@ -163,14 +167,15 @@ class ItemRequestServiceTest {
         when(itemRequestRepository.findById(2L))
                 .thenReturn(Optional.of(itemRequest));
 
+        assertDoesNotThrow(() -> itemRequestService.getItemRequestById(1L, 2L));
         final ItemRequestDto dto = itemRequestService.getItemRequestById(1L, 2L);
 
         assertNotNull(dto);
         assertEquals(itemRequest.getId(), dto.getId());
         assertEquals(user.getName(), dto.getRequestor().getName());
-        verify(userRepository, times(1)).findById(1L);
-        verify(itemRequestRepository, times(1)).findById(2L);
 
+        verify(userRepository, times(2)).findById(1L);
+        verify(itemRequestRepository, times(2)).findById(2L);
     }
 
     @Test

@@ -43,7 +43,6 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-
 class ItemServiceTest {
     private final LocalDateTime testTime = LocalDateTime.of(2022, 01, 01, 00, 00, 00);
 
@@ -149,20 +148,20 @@ class ItemServiceTest {
         when(commentRepository.findCommentsByItem(item))
                 .thenReturn(Collections.singletonList(comment));
 
-
+        assertDoesNotThrow(() -> itemService.getItems(1L, pageRequest));
         final List<ItemBookingDto> itemBookings = itemService.getItems(1L, pageRequest);
 
         assertNotNull(itemBookings);
         assertEquals(1, itemBookings.size());
         assertEquals(itemBookings.get(0).getId(), item.getId());
         assertEquals(itemBookings.get(0).getName(), item.getName());
-        verify(userRepository, times(1)).findById(any());
-        verify(itemRepository, times(1)).findItemsByOwner(any());
-        verify(bookingRepository, times(1)).findTopByItemAndStartAfter(
+        verify(userRepository, times(2)).findById(any());
+        verify(itemRepository, times(2)).findItemsByOwner(any());
+        verify(bookingRepository, times(2)).findTopByItemAndStartAfter(
                 any(), any(), any());
-        verify(bookingRepository, times(1)).findTopByItemAndEndBefore(
+        verify(bookingRepository, times(2)).findTopByItemAndEndBefore(
                 any(), any(), any());
-        verify(commentRepository, times(1)).findCommentsByItem(item);
+        verify(commentRepository, times(2)).findCommentsByItem(item);
 
     }
 
@@ -192,19 +191,19 @@ class ItemServiceTest {
         when(commentRepository.findCommentsByItem(item))
                 .thenReturn(Collections.singletonList(comment));
 
-
+        assertDoesNotThrow(() -> itemService.getItemById(1L, 1L));
         final ItemBookingDto itemBookingDto = itemService.getItemById(1L, 1L);
 
         assertNotNull(itemBookingDto);
         assertEquals(itemBookingDto.getId(), item.getId());
         assertEquals(itemBookingDto.getName(), item.getName());
-        verify(itemRepository, times(1)).findById(any());
-        verify(bookingRepository, times(1)).findTopByItemAndStartAfter(
-                any(), any(), any());
-        verify(bookingRepository, times(1)).findTopByItemAndEndBefore(
-                any(), any(), any());
-        verify(commentRepository, times(1)).findCommentsByItem(item);
 
+        verify(itemRepository, times(2)).findById(any());
+        verify(bookingRepository, times(2)).findTopByItemAndStartAfter(
+                any(), any(), any());
+        verify(bookingRepository, times(2)).findTopByItemAndEndBefore(
+                any(), any(), any());
+        verify(commentRepository, times(2)).findCommentsByItem(item);
     }
 
     @Test
@@ -242,14 +241,15 @@ class ItemServiceTest {
         when(itemRepository.save(any()))
                 .thenReturn(item);
 
+        assertDoesNotThrow(() -> itemService.addNewItem(1L, itemDto));
         ItemDto itemDtoReceived = itemService.addNewItem(1L, itemDto);
 
         assertNotNull(itemDtoReceived);
         assertEquals(itemDtoReceived.getId(), item.getId());
         assertEquals(itemDtoReceived.getName(), item.getName());
 
-        verify(userRepository, times(1)).findById(anyLong());
-        verify(itemRepository, times(1)).save(any());
+        verify(userRepository, times(2)).findById(anyLong());
+        verify(itemRepository, times(2)).save(any());
     }
 
     @Test
@@ -261,15 +261,16 @@ class ItemServiceTest {
         when(itemRepository.save(any()))
                 .thenReturn(item);
 
+        assertDoesNotThrow(() -> itemService.addNewItem(1L, itemDtoRequested));
         ItemDto itemDtoReceived = itemService.addNewItem(1L, itemDtoRequested);
 
         assertNotNull(itemDtoReceived);
         assertEquals(itemDtoReceived.getId(), item.getId());
         assertEquals(itemDtoReceived.getName(), item.getName());
 
-        verify(userRepository, times(1)).findById(anyLong());
-        verify(itemRequestRepository, times(1)).findById(anyLong());
-        verify(itemRepository, times(1)).save(any());
+        verify(userRepository, times(2)).findById(anyLong());
+        verify(itemRequestRepository, times(2)).findById(anyLong());
+        verify(itemRepository, times(2)).save(any());
     }
 
     @Test
@@ -315,17 +316,18 @@ class ItemServiceTest {
         when(commentRepository.save(any()))
                 .thenReturn(comment);
 
+        assertDoesNotThrow(() -> itemService.addNewComment(1L, 1L, commentDto));
         CommentDto commentReceived = itemService.addNewComment(1L, 1L, commentDto);
 
         assertNotNull(commentReceived);
         assertEquals(commentReceived.getId(), comment.getId());
         assertEquals(commentReceived.getText(), comment.getText());
 
-        verify(userRepository, times(1)).findById(anyLong());
-        verify(itemRepository, times(1)).findById(any());
-        verify(bookingRepository, times(1)).findBookingByBookerAndItemAndStateAndEndIsBefore(
+        verify(userRepository, times(2)).findById(anyLong());
+        verify(itemRepository, times(2)).findById(any());
+        verify(bookingRepository, times(2)).findBookingByBookerAndItemAndStateAndEndIsBefore(
                 any(), any(), any(), any());
-        verify(commentRepository, times(1)).save(any());
+        verify(commentRepository, times(2)).save(any());
     }
 
     @Test
@@ -387,14 +389,16 @@ class ItemServiceTest {
         when(itemRepository.findItemByIdAndOwner(anyLong(), any()))
                 .thenReturn(item);
 
+        assertDoesNotThrow(() -> itemService.updateItem(1L, 1L, itemUpdName));
         ItemDto itemReceived = itemService.updateItem(1L, 1L, itemUpdName);
 
         assertNotNull(itemReceived);
         assertEquals(itemReceived.getId(), item.getId());
         assertEquals(itemReceived.getName(), itemUpdName.getName());
         assertEquals(itemReceived.getAvailable(), item.getAvailable());
-        verify(userRepository, times(1)).findById(anyLong());
-        verify(itemRepository, times(1)).findItemByIdAndOwner(anyLong(), any());
+
+        verify(userRepository, times(2)).findById(anyLong());
+        verify(itemRepository, times(2)).findItemByIdAndOwner(anyLong(), any());
     }
 
     @Test
@@ -404,14 +408,16 @@ class ItemServiceTest {
         when(itemRepository.findItemByIdAndOwner(anyLong(), any()))
                 .thenReturn(item);
 
+        assertDoesNotThrow(() -> itemService.updateItem(1L, 1L, itemUpdAvailable));
         ItemDto itemReceived = itemService.updateItem(1L, 1L, itemUpdAvailable);
 
         assertNotNull(itemReceived);
         assertEquals(itemReceived.getId(), item.getId());
         assertEquals(itemReceived.getName(), item.getName());
         assertEquals(itemReceived.getAvailable(), itemUpdAvailable.getAvailable());
-        verify(userRepository, times(1)).findById(anyLong());
-        verify(itemRepository, times(1)).findItemByIdAndOwner(anyLong(), any());
+
+        verify(userRepository, times(2)).findById(anyLong());
+        verify(itemRepository, times(2)).findItemByIdAndOwner(anyLong(), any());
     }
 
     @Test
